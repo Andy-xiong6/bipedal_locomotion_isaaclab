@@ -7,12 +7,12 @@ version = "0.1.0"
 category = "isaaclab"
 readme  = "README.md"
 
-title = "Extension Template"
-author = "Isaac Lab Project Developers"
-maintainer = "Isaac Lab Project Developers"
-description="Extension Template for Isaac Lab"
-repository = "https://github.com/isaac-sim/IsaacLabExtensionTemplate.git"
-keywords = ["extension", "template", "isaaclab"]
+title = "Pointfoot-Isaac Lab Extension"
+author = "Xiong hongwei"
+maintainer = "Xiong hongwei"
+description="Pointfoot Extension for Isaac Lab"
+repository = "https://github.com/Andy-xiong6/pointfoot-IsaacLabExtension.git"
+keywords = ["extension", "isaaclab", "pointfoot", "locomotion]
 
 [dependencies]
 "omni.isaac.lab" = {}

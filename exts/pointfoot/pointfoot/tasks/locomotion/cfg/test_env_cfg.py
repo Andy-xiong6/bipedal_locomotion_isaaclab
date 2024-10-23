@@ -26,7 +26,7 @@ from omni.isaac.lab.utils.noise import AdditiveGaussianNoiseCfg as GaussianNoise
 
 
 @configclass
-class MySceneCfg(InteractiveSceneCfg):
+class PFSceneCfg(InteractiveSceneCfg):
     """Configuration for the test scene"""
 
     # terrain
@@ -61,7 +61,7 @@ class MySceneCfg(InteractiveSceneCfg):
         ),
     )
 
-    # quadruped robot
+    # pointfoot robot
     robot: ArticulationCfg = MISSING
 
     # contact sensors
@@ -241,11 +241,11 @@ class CurriculumCfg:
 
 
 @configclass
-class MyEnvCfg(ManagerBasedRLEnvCfg):
+class PFEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the test environment"""
 
     # Scene settings
-    scene: MySceneCfg = MySceneCfg(num_envs=1024, env_spacing=2.0)
+    scene: PFSceneCfg = PFSceneCfg(num_envs=1024, env_spacing=2.0)
     # Basic settings
     observations: ObservarionsCfg = ObservarionsCfg()
     actions: ActionsCfg = ActionsCfg()

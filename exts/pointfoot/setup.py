@@ -1,5 +1,6 @@
 """Installation script for the 'pointfoot' python package."""
 
+import itertools
 import os
 import toml
 
@@ -12,14 +13,39 @@ EXTENSION_TOML_DATA = toml.load(os.path.join(EXTENSION_PATH, "config", "extensio
 
 # Minimum dependencies required prior to installation
 INSTALL_REQUIRES = [
-    # NOTE: Add dependencies
-    "psutil",
+    # generic
+    "numpy",
+    "torch==2.4.0",
+    "torchvision>=0.14.1",  # ensure compatibility with torch 1.13.1
+    # 5.26.0 introduced a breaking change, so we restricted it for now.
+    # See issue https://github.com/tensorflow/tensorboard/issues/6808 for details.
+    "protobuf>=3.20.2, < 5.0.0",
+    # data collection
+    "h5py",
+    # basic logger
+    "tensorboard",
+    # video recording
+    "moviepy",
 ]
+
+PYTORCH_INDEX_URL = ["https://download.pytorch.org/whl/cu118"]
+
+# Extra dependencies for RL agents
+EXTRAS_REQUIRE = {
+    "rsl-rl": ["rsl-rl@git+https://github.com/leggedrobotics/rsl_rl.git"],
+}
+# Add the names with hyphens as aliases for convenience
+EXTRAS_REQUIRE["rsl_rl"] = EXTRAS_REQUIRE["rsl-rl"]
+
+# Cumulation of all extra-requires
+EXTRAS_REQUIRE["all"] = list(itertools.chain.from_iterable(EXTRAS_REQUIRE.values()))
+# Remove duplicates in the all list to avoid double installations
+EXTRAS_REQUIRE["all"] = list(set(EXTRAS_REQUIRE["all"]))
 
 # Installation operation
 setup(
-    name="pointfoot",
-    packages=["pointfoot"],
+    name="omni.isaac.pointfoot",
+    packages=["omni.isaac.pointfoot"],
     author=EXTENSION_TOML_DATA["package"]["author"],
     maintainer=EXTENSION_TOML_DATA["package"]["maintainer"],
     url=EXTENSION_TOML_DATA["package"]["repository"],
@@ -33,8 +59,7 @@ setup(
     classifiers=[
         "Natural Language :: English",
         "Programming Language :: Python :: 3.10",
-        "Isaac Sim :: 2023.1.1",
-        "Isaac Sim :: 4.0.0",
+        "Isaac Sim :: 4.2.0",
     ],
     zip_safe=False,
 )
