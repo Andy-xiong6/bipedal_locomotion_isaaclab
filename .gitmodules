@@ -1,0 +1,6 @@
+[submodule "/home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/omni/isaac/pointfoot/algorithms/rsl_rl"]
+	path = /home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/omni/isaac/pointfoot/algorithms/rsl_rl
+	url = https://github.com/leggedrobotics/rsl_rl.git
+[submodule "/home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/pointfoot/assets/urdf/robot-description"]
+	path = /home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/pointfoot/assets/urdf/robot-description
+	url = https://github.com/limxdynamics/robot-description.git
