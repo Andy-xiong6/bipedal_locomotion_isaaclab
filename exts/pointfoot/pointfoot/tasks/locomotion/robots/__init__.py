@@ -1,7 +1,7 @@
 
 import gymnasium as gym
 
-from omni.isaac.pointfoot.tasks.locomotion.agents.rsl_rl_ppo_cfg import PointFootPPORunnerCfg
+from pointfoot.tasks.locomotion.agents.rsl_rl_ppo_cfg import PointFootPPORunnerCfg
 from . import pointfoot_env_cfg
 
 
@@ -27,7 +27,7 @@ pf_blind_stairs_runner_cfg.experiment_name = "pf_blind_stairs"
 ############################
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Flat-v0",
+    id="Isaac-PF-Blind-Flat-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -37,7 +37,7 @@ gym.register(
 )
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Flat-Play-v0",
+    id="Isaac-PF-Blind-Flat-Play-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -51,7 +51,7 @@ gym.register(
 #############################
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Rough-v0",
+    id="Isaac-PF-Blind-Rough-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -61,7 +61,7 @@ gym.register(
 )
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Rough-Play-v0",
+    id="Isaac-PF-Blind-Rough-Play-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -75,7 +75,7 @@ gym.register(
 ##############################
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Stairs-v0",
+    id="Isaac-PF-Blind-Stairs-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -85,7 +85,7 @@ gym.register(
 )
 
 gym.register(
-    id="Isaac-Quadruped-PF-Blind-Stairs-Play-v0",
+    id="Isaac-PF-Blind-Stairs-Play-v0",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={

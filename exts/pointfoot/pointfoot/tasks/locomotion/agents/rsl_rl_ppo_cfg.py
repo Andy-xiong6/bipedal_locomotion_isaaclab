@@ -9,8 +9,8 @@ from omni.isaac.lab_tasks.utils.wrappers.rsl_rl import (
 @configclass
 class PointFootPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 20
-    max_iterations = 100000
-    save_interval = 1000
+    max_iterations = 101
+    save_interval = 100
     experiment_name = "pointfoot"
     empirical_normalization = False
     policy = RslRlPpoActorCriticCfg(

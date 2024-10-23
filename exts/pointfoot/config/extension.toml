@@ -12,7 +12,7 @@ author = "Xiong hongwei"
 maintainer = "Xiong hongwei"
 description="Pointfoot Extension for Isaac Lab"
 repository = "https://github.com/Andy-xiong6/pointfoot-IsaacLabExtension.git"
-keywords = ["extension", "isaaclab", "pointfoot", "locomotion]
+keywords = ["extension", "isaaclab", "pointfoot", "locomotion"]
 
 [dependencies]
 "omni.isaac.lab" = {}

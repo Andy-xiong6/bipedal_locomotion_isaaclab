@@ -27,19 +27,17 @@ This repository serves as a template for building projects or extensions based o
 
 ```bash
 # Option 1: HTTPS
-git clone https://github.com/isaac-sim/IsaacLabExtensionTemplate.git
+git clone https://github.com/Andy-xiong6/pointfoot-IsaacLabExtension.git
 
 # Option 2: SSH
-git clone git@github.com:isaac-sim/IsaacLabExtensionTemplate.git
+git clone git@github.com:Andy-xiong6/pointfoot-IsaacLabExtension.git
 ```
 
 - Throughout the repository, the name `pointfoot` only serves as an example and we provide a script to rename all the references to it automatically:
 
 ```bash
 # Enter the repository
-cd IsaacLabExtensionTemplate
-# Rename all occurrences of pointfoot (in files/directories) to your_fancy_extension_name
-python scripts/rename_template.py your_fancy_extension_name
+cd pointfoot-IsaacLabExtension
 ```
 
 - Using a python interpreter that has Isaac Lab installed, install the library
@@ -51,7 +49,7 @@ python -m pip install -e exts/pointfoot
 - Verify that the extension is correctly installed by running the following command:
 
 ```bash
-python scripts/rsl_rl/train.py --task=Template-Isaac-Velocity-Rough-Anymal-D-v0
+python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-v0
 ```
 
 ### Set up IDE (Optional)

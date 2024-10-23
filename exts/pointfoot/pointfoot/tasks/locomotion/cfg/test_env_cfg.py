@@ -137,7 +137,7 @@ class EventsCfg:
         func=mdp.randomize_rigid_body_mass,
         mode="startup",
         params={
-            "asset_cfg": SceneEntityCfg("robot", body_names="base"),
+            "asset_cfg": SceneEntityCfg("robot", body_names="base_Link"),
             "mass_distribution_params": (-1.0, 2.0),
             "operation": "add",
         },
@@ -200,8 +200,8 @@ class RewardsCfg:
         func=mdp.feet_slide,
         weight=-0.1,
         params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_foot"),
-            "asset_cfg": SceneEntityCfg("robot", body_names=".*_foot"),
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link"),
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*contact_[LR]_Link"),
         },
     )
     pen_undesired_contacts = RewTerm(
@@ -224,7 +224,7 @@ class TerminationsCfg:
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
     base_contact = DoneTerm(
         func=mdp.illegal_contact,
-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="base"), "threshold": 1.0},
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="base_Link"), "threshold": 1.0},
     )
 
 

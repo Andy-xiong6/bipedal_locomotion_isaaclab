@@ -1,18 +1,17 @@
 import os
 
-from onmi.isaac.lab.actuators import ImplicitActuatorCfg
+from omni.isaac.lab.actuators import ImplicitActuatorCfg
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets.articulation import ArticulationCfg
 
-usd_path = os.path.join(os.environ["EXP_PATH"], "exts/pointfoot/pointfoot/assets/usd/PF_P441A/PF_441A.usd")
+usd_path = "/home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/pointfoot/assets/usd/PF_P441C2/PF_P441C2.usd"
 
 POINTFOOT_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
         usd_path=usd_path,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             rigid_body_enabled=True,
-            retain_acceleration=False,
             disable_gravity=False,
             linear_damping=0.0,
             angular_damping=0.0,
@@ -25,9 +24,9 @@ POINTFOOT_CFG = ArticulationCfg(
             solver_position_iteration_count=4,
             solver_velocity_iteration_count=4,
         ),
-        activate_contact_sensors=False,
+        activate_contact_sensors=True,
     ),
-    init_state=ArticulationCfg.InitStateCfg(
+    init_state=ArticulationCfg.InitialStateCfg(
         pos=(0.0, 0.0, 0.6),
         joint_pos={
             "abad_L_Joint": 0.0,

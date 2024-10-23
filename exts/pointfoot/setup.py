@@ -44,8 +44,8 @@ EXTRAS_REQUIRE["all"] = list(set(EXTRAS_REQUIRE["all"]))
 
 # Installation operation
 setup(
-    name="omni.isaac.pointfoot",
-    packages=["omni.isaac.pointfoot"],
+    name="pointfoot",
+    packages=["pointfoot"],
     author=EXTENSION_TOML_DATA["package"]["author"],
     maintainer=EXTENSION_TOML_DATA["package"]["maintainer"],
     url=EXTENSION_TOML_DATA["package"]["repository"],
