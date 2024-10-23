@@ -1,7 +1,7 @@
 import math
 from dataclasses import MISSING
 
-from omni.isaac.pointfoot import mdp
+from pointfoot import mdp
 
 from omni.isaac.lab.assets import ArticulationCfg, AssetBaseCfg
 from omni.isaac.lab.envs import ManagerBasedRLEnvCfg

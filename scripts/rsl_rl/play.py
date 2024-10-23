@@ -36,7 +36,7 @@ import torch
 from rsl_rl.runners import OnPolicyRunner
 
 # Import extensions to set up environment tasks
-import omni.isaac.pointfoot  # noqa: F401
+import pointfoot  # noqa: F401
 
 from omni.isaac.lab.envs import ManagerBasedRLEnvCfg
 from omni.isaac.lab_tasks.utils import get_checkpoint_path, parse_env_cfg
