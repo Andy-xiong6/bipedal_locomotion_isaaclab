@@ -1,1 +1,1 @@
-python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-v0 --max_iteration=201 --headless
+python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-v0 --max_iteration=3001 --headless --num_envs=4096
