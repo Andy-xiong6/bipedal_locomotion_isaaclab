@@ -48,7 +48,7 @@ python scripts/rsl_rl/train.py --task={TASK_NAME}
 - To play a trained model:
 
 ```bash
-python scripts/play.py --task={TASK_NAME} --checkpoint_path=path/to/checkpoint
+python scripts/rsl_rl/play.py --task={TASK_NAME} --checkpoint_path=path/to/checkpoint
 ```
 
 ## Troubleshooting
