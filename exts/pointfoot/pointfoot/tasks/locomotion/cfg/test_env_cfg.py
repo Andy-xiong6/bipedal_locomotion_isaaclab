@@ -1,8 +1,6 @@
 import math
 from dataclasses import MISSING
 
-from pointfoot.tasks.locomotion import mdp
-
 from omni.isaac.lab.assets import ArticulationCfg, AssetBaseCfg
 from omni.isaac.lab.envs import ManagerBasedRLEnvCfg
 from omni.isaac.lab.managers import CurriculumTermCfg as CurrTerm
@@ -13,12 +11,14 @@ from omni.isaac.lab.managers import RewardTermCfg as RewTerm
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.managers import TerminationTermCfg as DoneTerm
 from omni.isaac.lab.scene import InteractiveSceneCfg
-from omni.isaac.lab.sensors import ContactSensorCfg
+from omni.isaac.lab.sensors import ContactSensorCfg, RayCasterCfg, patterns
 from omni.isaac.lab.sim import DomeLightCfg, MdlFileCfg, RigidBodyMaterialCfg
 from omni.isaac.lab.terrains import TerrainImporterCfg
 from omni.isaac.lab.utils import configclass
 from omni.isaac.lab.utils.assets import ISAAC_NUCLEUS_DIR, ISAACLAB_NUCLEUS_DIR
 from omni.isaac.lab.utils.noise import AdditiveGaussianNoiseCfg as GaussianNoise
+
+from pointfoot.tasks.locomotion import mdp
 
 ##################
 # Scene Definition
@@ -64,6 +64,16 @@ class PFSceneCfg(InteractiveSceneCfg):
     # pointfoot robot
     robot: ArticulationCfg = MISSING
 
+    # height sensors
+    height_scanner = RayCasterCfg(
+        prim_path="{ENV_REGEX_NS}/Robot",
+        offset=RayCasterCfg.OffsetCfg(pos=(0.0, 0.0, 20.0)),
+        attach_yaw_only=True,
+        pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=[1.6, 1.0]),
+        debug_vis=True,
+        mesh_prim_paths=["/World/ground"],
+    )
+    
     # contact sensors
     contact_forces = ContactSensorCfg(
         prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=4, track_air_time=True, update_period=0.0
@@ -107,20 +117,25 @@ class ObservarionsCfg:
     class PolicyCfg(ObsGroup):
         """Observation for policy group"""
 
-        # velocity command
-        vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
-
         # robot base measurements
-        base_lin_vel = ObsTerm(func=mdp.base_lin_vel, noise=GaussianNoise(mean=0.0, std=0.05))
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=GaussianNoise(mean=0.0, std=0.05))
         proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
-
+        
+        #velocity command
+        vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
+        
         # robot joint measurements
         joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
+        joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
 
         # last action
         last_action = ObsTerm(func=mdp.last_action)
-
+        
+        # height measurement
+        heights = ObsTerm(func=mdp.height_scan, 
+                          params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+                                    noise=GaussianNoise(mean=0.0, std=0.01),
+                            )
         def __post_init__(self):
             self.enable_corruption = True
             self.concatenate_terms = True
@@ -264,3 +279,7 @@ class PFEnvCfg(ManagerBasedRLEnvCfg):
         # simulation settings
         self.sim.dt = 1 / 400.0
         self.seed = 42
+        # update sensor update periods
+        # we tick all the sensors based on the smallest update period (physics update period)
+        if self.scene.height_scanner is not None:
+            self.scene.height_scanner.update_period = self.decimation * self.sim.dt

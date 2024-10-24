@@ -1,9 +1,8 @@
-
 import gymnasium as gym
 
 from pointfoot.tasks.locomotion.agents.rsl_rl_ppo_cfg import PointFootPPORunnerCfg
-from . import pointfoot_env_cfg
 
+from . import pointfoot_env_cfg
 
 ##
 # Create PPO runners for RSL-RL

@@ -1,5 +1,8 @@
+import math
+
 from omni.isaac.lab.utils import configclass
 
+from pointfoot.assets.config.pointfoot_cfg import POINTFOOT_CFG
 from pointfoot.tasks.locomotion.cfg.test_env_cfg import PFEnvCfg
 from pointfoot.tasks.locomotion.cfg.test_terrains_cfg import (
     BLIND_ROUGH_TERRAINS_CFG,
@@ -7,11 +10,6 @@ from pointfoot.tasks.locomotion.cfg.test_terrains_cfg import (
     STAIRS_TERRAINS_CFG,
     STAIRS_TERRAINS_PLAY_CFG,
 )
-
-from pointfoot.assets.config.pointfoot_cfg import POINTFOOT_CFG
-
-import math
-
 
 ######################
 # Pointfoot Base Environment
@@ -32,13 +30,14 @@ class PFBaseEnvCfg(PFEnvCfg):
             "hip_R_Joint": 0.0918,
             "knee_R_Joint": -0.057,
         }
-        
+
         self.events.add_base_mass.params["asset_cfg"].body_names = "base_Link"
         self.events.add_base_mass.params["mass_distribution_params"] = (-2.5, 5.0)
 
         self.terminations.base_contact.params["sensor_cfg"].body_names = "base_Link"
-        
+
         self.rewards.pen_undesired_contacts = None
+
 
 @configclass
 class PFBaseEnvCfg_PLAY(PFBaseEnvCfg):
