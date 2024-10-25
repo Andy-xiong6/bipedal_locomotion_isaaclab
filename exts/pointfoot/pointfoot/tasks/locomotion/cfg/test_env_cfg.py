@@ -77,7 +77,7 @@ class PFSceneCfg(InteractiveSceneCfg):
     
     # contact sensors
     contact_forces = ContactSensorCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=4, track_air_time=True, update_period=0.0
+        prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=4, track_air_time=True, update_period=0.0, track_pose= True,
     )
 
 
@@ -208,6 +208,11 @@ class RewardsCfg:
     rew_ang_vel_z = RewTerm(
         func=mdp.track_ang_vel_z_exp, weight=5, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
+    rew_no_fly = RewTerm(
+        func=mdp.no_fly, weight = 1.0, 
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link")}
+    )
+    
 
     # penalizations
     pen_feet_slide = RewTerm(
@@ -216,15 +221,6 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link"),
             "asset_cfg": SceneEntityCfg("robot", body_names=".*contact_[LR]_Link"),
-        },
-    )
-    pen_feet_air_time = RewTerm(
-        func=mdp.feet_air_time,
-        weight=5.0,
-        params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
-            "command_name": "base_velocity",
-            "threshold": 0.5,
         },
     )
     pen_undesired_contacts = RewTerm(
@@ -246,6 +242,12 @@ class RewardsCfg:
                                       weight=-0.01)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
     pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
+    pen_unbalance_feet_air_time = RewTerm(func=mdp.unbalance_feet_air_time, weight=-300.0,
+                                          params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link", ), })
+    pen_unbalance_feet_height = RewTerm(func=mdp.unbalance_feet_height, weight=-60.0,
+                                        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link", ), })
+    pen_feet_distance = RewTerm(func=mdp.feet_distance, weight=-100.0,
+                                params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link", ), })
 @configclass
 class TerminationsCfg:
     """Termination terms for the MDP"""
