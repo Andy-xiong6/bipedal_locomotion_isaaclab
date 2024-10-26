@@ -12,9 +12,9 @@
 
 This repository is used to simulate pointfoot robot, such as limxdynamics TRON1.
 
-**Keywords:** extension, locomotion, isaaclab, pointfoot
+**Keywords:** extension, isaaclab, locomotion, pointfoot
 
-## Installation,
+## Installation
 
 - Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/source/setup/installation/index.html). We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
 
@@ -30,6 +30,7 @@ git clone git@github.com:Andy-xiong6/pointfoot-IsaacLabExtension.git
 
 ```bash
 # Enter the repository
+conda activate isaaclab
 cd pointfoot-IsaacLabExtension
 ```
 
@@ -39,17 +40,45 @@ cd pointfoot-IsaacLabExtension
 python -m pip install -e exts/pointfoot
 ```
 
-- Verify that the extension is correctly installed by running the following command:
+## Training the pointfoot agent
+- Use the `scripts/rsl_rl/train.py` script to train the robot directly, specifying the task:
 
 ```bash
-python scripts/rsl_rl/train.py --task={TASK_NAME}
+python scripts/rsl_rl/train.py --task={TASK_NAME} --headless
 ```
 
+- It is recommend to use `start.sh` script to train the robot, specifying the task in the script:
+
+```bash
+bash ./start.sh
+```
+
+- The following arguments can be used to customize the training:
+* --headless: Run the simulation in headless mode
+* --num_envs: Number of parallel environments to run
+* --max_iterations: Maximum number of training iterations
+* --save_interval: Interval to save the model
+* --seed: Seed for the random number generator
+
+## Playing the trained model
 - To play a trained model:
 
 ```bash
-python scripts/rsl_rl/play.py --task={TASK_NAME} --checkpoint_path=path/to/checkpoint
+python scripts/rsl_rl/play.py --task={TASK_NAME} --checkpoint_path=path/to/checkpoint --num_envs=32
 ```
+
+- The following arguments can be used to customize the playing:
+* --num_envs: Number of parallel environments to run
+* --headless: Run the simulation in headless mode
+* --checkpoint_path: Path to the checkpoint to load
+
+## Running exported model in mujoco (sim2sim)
+- After playing the model, the policy has already been saved. You can export the policy to mujoco environment and run it in mujoco by using the `rl-deploy-with-python` repo [limxdynamics/rl-deploy-with-python]. 
+
+- Follwing the instructions to install it properly and replace the `model/pointfoot/{Robot Type}/policy/policy.onnx` by your trained policy.onnx.
+
+## Running exported model in real robot (sim2real)
+- TODO
 
 ## Troubleshooting
 
