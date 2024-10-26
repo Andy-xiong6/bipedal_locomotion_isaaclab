@@ -28,7 +28,7 @@ def no_fly(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
     
     return 1. * single_contact
 
-def unbalance_feet_air_time(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, balance_threshold: float = 0.1) -> torch.Tensor:
+def unbalance_feet_air_time(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
     """Penalize if the feet air time variance exceeds the balance threshold."""
     
     contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]

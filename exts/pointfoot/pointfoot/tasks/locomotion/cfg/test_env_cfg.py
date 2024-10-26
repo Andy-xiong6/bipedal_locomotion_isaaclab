@@ -108,7 +108,7 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP"""
 
-    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True)
+    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.4, use_default_offset=True)
 
 
 @configclass
@@ -120,20 +120,24 @@ class ObservarionsCfg:
         """Observation for policy group"""
 
         # robot base measurements
-        # base_lin_vel = ObsTerm(func=mdp.base_lib_vel, noise=GaussianNoise(mean=0.0, std=0.05))
-        base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=GaussianNoise(mean=0.0, std=0.05))
-        proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
+        # base_lin_vel = ObsTerm(func=mdp.base_lib_vel, noise=GaussianNoise(mean=0.0, std=0.1), scale=2.0)
+        base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=GaussianNoise(mean=0.0, std=0.2), scale=0.25)
+        proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.05), scale=1.0)
         
         # robot joint measurements
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
-        joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
+        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01), scale=1.0)
+        joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=1.5), scale=0.05)
 
         # last action
-        last_action = ObsTerm(func=mdp.last_action)
+        last_action = ObsTerm(func=mdp.last_action, scale=1.0)
         
         #velocity command
-        vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
-        
+        vel_command = ObsTerm(func=mdp.scaled_generated_commands, 
+                              params = {
+                                  "command_name": "base_velocity",
+                                  "scale_factor": [2.0, 0.25, 1.0],
+                                  "clip_heading": True,
+                              })
         # height measurement
         # heights = ObsTerm(func=mdp.height_scan, 
         #                   params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
@@ -235,7 +239,7 @@ class RewardsCfg:
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
     pen_base_height = RewTerm(func=mdp.base_height_l2, 
-                              params={"target_height": 0.8},
+                              params={"target_height": 0.62},
                               weight=-10.0)
     pen_feet_contact_forces = RewTerm(func=mdp.contact_forces, 
                                       params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 1.0},
