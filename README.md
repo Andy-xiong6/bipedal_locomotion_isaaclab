@@ -44,7 +44,7 @@ python -m pip install -e exts/pointfoot
 - Use the `scripts/rsl_rl/train.py` script to train the robot directly, specifying the task:
 
 ```bash
-python scripts/rsl_rl/train.py --task={TASK_NAME} --headless
+python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-v0 --headless
 ```
 
 - It is recommend to use `start.sh` script to train the robot, specifying the task in the script:
@@ -64,7 +64,7 @@ bash ./start.sh
 - To play a trained model:
 
 ```bash
-python scripts/rsl_rl/play.py --task={TASK_NAME} --checkpoint_path=path/to/checkpoint --num_envs=32
+python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-v0 --checkpoint_path=path/to/checkpoint --num_envs=32
 ```
 
 - The following arguments can be used to customize the playing:

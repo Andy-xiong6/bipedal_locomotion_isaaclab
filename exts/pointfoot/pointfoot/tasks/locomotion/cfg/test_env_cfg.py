@@ -224,19 +224,10 @@ class RewardsCfg:
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link")},
     )
 
-    # penalizations
-    pen_feet_slide = RewTerm(
-        func=mdp.feet_slide,
-        weight=-0.0,
-        params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link"),
-            "asset_cfg": SceneEntityCfg("robot", body_names=".*contact_[LR]_Link"),
-        },
-    )
     pen_undesired_contacts = RewTerm(
         func=mdp.undesired_contacts,
         weight=-50.0,
-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_[LR]_Link"), "threshold": 1.0},
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_[LR]_Link"), "threshold": 0.1},
     )
     pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
     pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
@@ -244,10 +235,10 @@ class RewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
-    pen_base_height = RewTerm(func=mdp.base_height_l2, params={"target_height": 0.62}, weight=-10.0)
+    pen_base_height = RewTerm(func=mdp.base_height_l2, params={"target_height": 0.7}, weight=-10.0)
     pen_feet_contact_forces = RewTerm(
         func=mdp.contact_forces,
-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 1.0},
+        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link"), "threshold": 200},
         weight=-0.01,
     )
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
@@ -258,7 +249,7 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg(
                 "contact_forces",
-                body_names=".*foot_[LR]_Link",
+                body_names=".*contact_[LR]_Link",
             ),
         },
     )
@@ -268,7 +259,7 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg(
                 "contact_forces",
-                body_names=".*foot_[LR]_Link",
+                body_names=".*contact_[LR]_Link",
             ),
         },
     )
@@ -278,7 +269,7 @@ class RewardsCfg:
         params={
             "sensor_cfg": SceneEntityCfg(
                 "contact_forces",
-                body_names=".*foot_[LR]_Link",
+                body_names=".*contact_[LR]_Link",
             ),
         },
     )
