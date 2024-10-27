@@ -24,19 +24,17 @@ class PFBaseEnvCfg(PFEnvCfg):
         self.scene.robot = POINTFOOT_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.init_state.joint_pos = {
             "abad_L_Joint": 0.0,
-            "hip_L_Joint": 0.0918,
-            "knee_L_Joint": -0.057,
+            "hip_L_Joint": 0.0,
+            "knee_L_Joint": 0.0,
             "abad_R_Joint": 0.0,
-            "hip_R_Joint": 0.0918,
-            "knee_R_Joint": -0.057,
+            "hip_R_Joint": 0.0,
+            "knee_R_Joint": 0.0,
         }
 
         self.events.add_base_mass.params["asset_cfg"].body_names = "base_Link"
-        self.events.add_base_mass.params["mass_distribution_params"] = (-2.5, 5.0)
+        self.events.add_base_mass.params["mass_distribution_params"] = (-1.0, 2.0)
 
         self.terminations.base_contact.params["sensor_cfg"].body_names = "base_Link"
-
-        self.rewards.pen_undesired_contacts = None
 
 
 @configclass
@@ -74,7 +72,7 @@ class PFBlindFlatEnvCfg(PFBaseEnvCfg):
 class PFBlindFlatEnvCfg_PLAY(PFBaseEnvCfg_PLAY):
     def __post_init__(self):
         super().__post_init__()
-
+        
         self.curriculum.terrain_levels = None
 
 
