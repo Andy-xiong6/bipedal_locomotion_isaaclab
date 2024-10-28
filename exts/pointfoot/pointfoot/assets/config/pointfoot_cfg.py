@@ -26,7 +26,7 @@ POINTFOOT_CFG = ArticulationCfg(
         activate_contact_sensors=True,
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.8),
+        pos=(0.0, 0.0, 1.0),
         joint_pos={
             "abad_L_Joint": 0.0,
             "hip_L_Joint": 0.0,

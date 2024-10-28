@@ -24,11 +24,11 @@ class PFBaseEnvCfg(PFEnvCfg):
         self.scene.robot = POINTFOOT_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.init_state.joint_pos = {
             "abad_L_Joint": 0.0,
-            "hip_L_Joint": 0.0,
-            "knee_L_Joint": 0.0,
+            "hip_L_Joint": 0.0918,
+            "knee_L_Joint": -0.057,
             "abad_R_Joint": 0.0,
-            "hip_R_Joint": 0.0,
-            "knee_R_Joint": 0.0,
+            "hip_R_Joint": 0.0918,
+            "knee_R_Joint": -0.057,
         }
 
         self.events.add_base_mass.params["asset_cfg"].body_names = "base_Link"
