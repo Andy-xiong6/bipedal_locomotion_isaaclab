@@ -1,0 +1,138 @@
+[INFO]: Parsing configuration from: <class 'pointfoot.tasks.locomotion.robots.pointfoot_env_cfg.PFBlindFlatEnvCfg'>
+[INFO]: Parsing configuration from: PointFootPPORunnerCfg(seed=42, device='cuda:0', num_steps_per_env=24, max_iterations=3001, empirical_normalization=False, policy=RslRlPpoActorCriticCfg(class_name='ActorCritic', init_noise_std=1.0, actor_hidden_dims=[128, 64, 32], critic_hidden_dims=[128, 64, 32], activation='elu'), algorithm=RslRlPpoAlgorithmCfg(class_name='PPO', value_loss_coef=1.0, use_clipped_value_loss=True, clip_param=0.2, entropy_coef=0.01, num_learning_epochs=5, num_mini_batches=4, learning_rate=0.001, schedule='adaptive', gamma=0.99, lam=0.95, desired_kl=0.01, max_grad_norm=1.0), save_interval=200, experiment_name='pf_blind_flat', run_name='', logger='tensorboard', neptune_project='isaaclab', wandb_project='isaaclab', resume=False, load_run='.*', load_checkpoint='model_.*.pt')
+[INFO] Logging experiment in directory: /home/xhw/pointfoot-IsaacLabExtension/logs/rsl_rl/pf_blind_flat
+Setting seed: 42
+[INFO]: Base environment:
+	Environment device    : cuda:0
+	Environment seed      : 42
+	Physics step-size     : 0.005
+	Rendering step-size   : 0.04
+	Environment step-size : 0.02
+[INFO]: Time taken for scene creation : 4.796897 seconds
+
+2024-10-27 03:34:53 [13,095ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPreviewSurface.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2024-10-27 03:34:53 [13,095ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdUVTexture.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2024-10-27 03:34:53 [13,095ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2024-10-27 03:34:53 [13,095ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float2.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+2024-10-27 03:34:53 [13,095ms] [Warning] [omni.usd] Warning: in GetNodeDiscoveryResults at line 136 of /builds/omniverse/usd-ci/USD/pxr/usd/usdShade/shaderDefUtils.cpp -- Unable to resolve info:sourceAsset </UsdPrimvarReader_float3.info:mdl:sourceAsset> with value @UsdPreviewSurface.mdl@.
+
+[INFO] Command Manager:  <CommandManager> contains 1 active terms.
++------------------------------------------------+
+|              Active Command Terms              |
++-------+---------------+------------------------+
+| Index | Name          |          Type          |
++-------+---------------+------------------------+
+|   0   | base_velocity | UniformVelocityCommand |
++-------+---------------+------------------------+
+
+[INFO] Action Manager:  <ActionManager> contains 1 active terms.
++----------------------------------+
+|  Active Action Terms (shape: 6)  |
++--------+------------+------------+
+| Index  | Name       |  Dimension |
++--------+------------+------------+
+|   0    | joint_pos  |          6 |
++--------+------------+------------+
+
+[INFO] Observation Manager: <ObservationManager> contains 1 groups.
++-------------------------------------------------------+
+| Active Observation Terms in Group: 'policy' (shape: (27,)) |
++-------------+---------------------------+-------------+
+|    Index    | Name                      |    Shape    |
++-------------+---------------------------+-------------+
+|      0      | base_ang_vel              |     (3,)    |
+|      1      | proj_gravity              |     (3,)    |
+|      2      | joint_pos                 |     (6,)    |
+|      3      | joint_vel                 |     (6,)    |
+|      4      | last_action               |     (6,)    |
+|      5      | vel_command               |     (3,)    |
++-------------+---------------------------+-------------+
+
+[INFO] Event Manager:  <EventManager> contains 3 active terms.
++-------------------------------------+
+| Active Event Terms in Mode: 'startup' |
++-----------+-------------------------+
+|   Index   | Name                    |
++-----------+-------------------------+
+|     0     | add_base_mass           |
++-----------+-------------------------+
++-------------------------------------+
+| Active Event Terms in Mode: 'reset' |
++---------+---------------------------+
+|  Index  | Name                      |
++---------+---------------------------+
+|    0    | reset_robot_base          |
+|    1    | reset_robot_joints        |
++---------+---------------------------+
++----------------------------------------------+
+|    Active Event Terms in Mode: 'interval'    |
++-------+------------+-------------------------+
+| Index | Name       | Interval time range (s) |
++-------+------------+-------------------------+
+|   0   | push_robot |       (10.0, 15.0)      |
++-------+------------+-------------------------+
+
+[INFO] Termination Manager:  <TerminationManager> contains 2 active terms.
++---------------------------------+
+|     Active Termination Terms    |
++-------+--------------+----------+
+| Index | Name         | Time Out |
++-------+--------------+----------+
+|   0   | time_out     |   True   |
+|   1   | base_contact |  False   |
++-------+--------------+----------+
+
+[INFO] Reward Manager:  <RewardManager> contains 14 active terms.
++------------------------------------------------+
+|              Active Reward Terms               |
++-------+-----------------------------+----------+
+| Index | Name                        |   Weight |
++-------+-----------------------------+----------+
+|   0   | rew_lin_vel_xy              |     10.0 |
+|   1   | rew_ang_vel_z               |        5 |
+|   2   | rew_no_fly                  |      1.0 |
+|   3   | pen_lin_vel_z               |     -0.5 |
+|   4   | pen_ang_vel_xy              |    -0.05 |
+|   5   | pen_action_rate             |    -0.01 |
+|   6   | pen_joint_accel             | -2.5e-07 |
+|   7   | pen_joint_powers            |  -0.0005 |
+|   8   | pen_base_height             |    -10.0 |
+|   9   | pen_feet_contact_forces     |    -0.01 |
+|   10  | pen_applied_torque_limits   |     -0.1 |
+|   11  | pen_unbalance_feet_air_time |   -300.0 |
+|   12  | pen_unbalance_feet_height   |    -60.0 |
+|   13  | pen_feet_distance           |   -100.0 |
++-------+-----------------------------+----------+
+
+[INFO] Curriculum Manager:  <CurriculumManager> contains 0 active terms.
++----------------------+
+| Active Curriculum Terms |
++-----------+----------+
+|   Index   | Name     |
++-----------+----------+
++-----------+----------+
+
+[INFO]: Completed setting up the environment...
+Actor MLP: Sequential(
+  (0): Linear(in_features=27, out_features=128, bias=True)
+  (1): ELU(alpha=1.0)
+  (2): Linear(in_features=128, out_features=64, bias=True)
+  (3): ELU(alpha=1.0)
+  (4): Linear(in_features=64, out_features=32, bias=True)
+  (5): ELU(alpha=1.0)
+  (6): Linear(in_features=32, out_features=6, bias=True)
+)
+Critic MLP: Sequential(
+  (0): Linear(in_features=27, out_features=128, bias=True)
+  (1): ELU(alpha=1.0)
+  (2): Linear(in_features=128, out_features=64, bias=True)
+  (3): ELU(alpha=1.0)
+  (4): Linear(in_features=64, out_features=32, bias=True)
+  (5): ELU(alpha=1.0)
+  (6): Linear(in_features=32, out_features=1, bias=True)
+)
+Setting seed: 42

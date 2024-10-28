@@ -24,10 +24,10 @@ class PFBaseEnvCfg(PFEnvCfg):
         self.scene.robot = POINTFOOT_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.init_state.joint_pos = {
             "abad_L_Joint": 0.0,
-            "hip_L_Joint": 0.0918,
-            "knee_L_Joint": -0.057,
             "abad_R_Joint": 0.0,
+            "hip_L_Joint": 0.0918,
             "hip_R_Joint": 0.0918,
+            "knee_L_Joint": -0.057,
             "knee_R_Joint": -0.057,
         }
 
@@ -120,7 +120,14 @@ class PFBlindStairsEnvCfg(PFBaseEnvCfg):
         self.commands.base_velocity.ranges.lin_vel_y = (-0.0, 0.0)
         self.commands.base_velocity.ranges.ang_vel_z = (-math.pi / 6, math.pi / 6)
 
+        self.rewards.rew_lin_vel_xy.weight = 2.0
+        self.rewards.rew_ang_vel_z.weight = 1.5
+        self.rewards.pen_lin_vel_z.weight = -1.0
+        self.rewards.pen_ang_vel_xy.weight = -0.05
         self.rewards.pen_joint_deviation.weight = -0.2
+        self.rewards.pen_action_rate.weight = -0.01
+        self.rewards.pen_flat_orientation.weight = -2.5
+        self.rewards.pen_undesired_contacts.weight = -1.0
 
         self.scene.terrain.terrain_type = "generator"
         self.scene.terrain.terrain_generator = STAIRS_TERRAINS_CFG

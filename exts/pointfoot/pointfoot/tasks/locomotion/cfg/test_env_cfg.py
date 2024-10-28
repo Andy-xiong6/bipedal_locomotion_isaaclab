@@ -108,7 +108,7 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP"""
 
-    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True)
+    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True, preserve_order=True)
 
 
 @configclass
@@ -125,7 +125,7 @@ class ObservarionsCfg:
         proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
         
         # robot joint measurements
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
+        joint_pos = ObsTerm(func=mdp.joint_pos_rel_debug, noise=GaussianNoise(mean=0.0, std=0.01))
         joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
 
         # last action
@@ -208,15 +208,15 @@ class RewardsCfg:
     rew_ang_vel_z = RewTerm(
         func=mdp.track_ang_vel_z_exp, weight=5, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
+    rew_no_fly = RewTerm(
+        func=mdp.no_fly, weight=5.0, params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), }
+    )
 
     # penalizations
-    pen_feet_slide = RewTerm(
-        func=mdp.feet_slide,
-        weight=-0.0,
-        params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*contact_[LR]_Link"),
-            "asset_cfg": SceneEntityCfg("robot", body_names=".*contact_[LR]_Link"),
-        },
+    pen_joint_deviation = RewTerm(
+        func=mdp.joint_deviation_l1,
+        weight=-0.05,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*"])},
     )
     pen_feet_air_time = RewTerm(
         func=mdp.feet_air_time,
@@ -238,14 +238,16 @@ class RewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
-    pen_base_height = RewTerm(func=mdp.base_height_l2, 
-                              params={"target_height": 0.8},
-                              weight=-10.0)
-    pen_feet_contact_forces = RewTerm(func=mdp.contact_forces, 
-                                      params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 1.0},
-                                      weight=-0.01)
+    # pen_base_height = RewTerm(func=mdp.base_height_l2, 
+    #                           params={"target_height": 0.8},
+    #                           weight=-10.0)
+    # pen_feet_contact_forces = RewTerm(func=mdp.contact_forces, 
+    #                                   params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 350.0},
+    #                                   weight=-0.01)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
-    pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
+    # pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
+    pen_no_contact = RewTerm(func=mdp.no_contact, weight=-5.0, 
+                             params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),})
 @configclass
 class TerminationsCfg:
     """Termination terms for the MDP"""

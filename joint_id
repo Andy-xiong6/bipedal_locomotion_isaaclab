@@ -1,0 +1,13 @@
+abad_L hip_L knee_L abad_R hip_R knee_R
+0       1       2     3      4     5
+abad_L abad_R hip_L hip_R knee_L knee_R
+0        3      1      4     2      5
+
+train:
+observation:  abad_L abad_R hip_L hip_R knee_L knee_R
+action: abad_L abad_R hip_L hip_R knee_L knee_R
+
+
+deploy:
+observation:  abad_L abad_R hip_L hip_R knee_L knee_R
+action: abad_L abad_R hip_L hip_R knee_L knee_R

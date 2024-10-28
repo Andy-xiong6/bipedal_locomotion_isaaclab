@@ -24,7 +24,7 @@ def no_fly(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
     contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
     latest_contact_forces = contact_sensor.data.net_forces_w_history[:, 0, :, 2]
 
-    contacts = latest_contact_forces > 0.1
+    contacts = latest_contact_forces > 1.0
     single_contact = torch.sum(contacts.float(), dim=1) == 1
 
     return 1.0 * single_contact
@@ -71,3 +71,19 @@ def feet_distance(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, min_feet_d
             feet_distance = torch.norm(feet_positions[:, i, :2] - feet_positions[:, j, :2], dim=-1)
             reward += torch.clip(min_feet_distance - feet_distance, 0, 1)
     return reward
+
+def no_contact(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
+    """
+    Penalize if both feet are not in contact with the ground.
+    """
+
+    # Access the contact sensor
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+
+    # Get the latest contact forces in the z direction (upward direction)
+    latest_contact_forces = contact_sensor.data.net_forces_w_history[:, 0, :, 2]  # shape: (env_num, 2)
+
+    # Determine if each foot is in contact
+    contacts = latest_contact_forces > 1.0  # Returns a boolean tensor where True indicates contact
+
+    return (torch.sum(contacts.float(), dim=1) == 0).float()
