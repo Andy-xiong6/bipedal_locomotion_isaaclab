@@ -72,7 +72,7 @@ class PFBlindFlatEnvCfg(PFBaseEnvCfg):
 class PFBlindFlatEnvCfg_PLAY(PFBaseEnvCfg_PLAY):
     def __post_init__(self):
         super().__post_init__()
-        
+
         self.curriculum.terrain_levels = None
 
 

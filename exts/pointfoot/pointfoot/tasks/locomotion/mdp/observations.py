@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.sensors import ContactSensor
 from omni.isaac.lab.utils.string import resolve_matching_names
+
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
 
@@ -18,6 +19,7 @@ def feet_contact_bools(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, thres
     net_contact_forces = contact_sensor.data.net_forces_w
     # check which contact forces exceed the threshold
     return torch.norm(net_contact_forces[:, sensor_cfg.body_ids], dim=-1) > threshold
+
 
 def joint_pos_rel_debug(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     """Get joint positions relative to the default positions based on joint names."""

@@ -72,6 +72,7 @@ def feet_distance(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, min_feet_d
             reward += torch.clip(min_feet_distance - feet_distance, 0, 1)
     return reward
 
+
 def no_contact(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
     """
     Penalize if both feet are not in contact with the ground.

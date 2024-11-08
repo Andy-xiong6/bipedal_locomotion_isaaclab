@@ -74,7 +74,7 @@ class PFSceneCfg(InteractiveSceneCfg):
     #     mesh_prim_paths=["/World/ground"],
     # )
     height_scanner = None
-    
+
     # contact sensors
     contact_forces = ContactSensorCfg(
         prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=4, track_air_time=True, update_period=0.0
@@ -108,8 +108,12 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP"""
 
-    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True)
-    
+    joint_pos = mdp.JointPositionActionCfg(
+        asset_name="robot",
+        joint_names=["abad_L_Joint", "abad_R_Joint", "hip_L_Joint", "hip_R_Joint", "knee_L_Joint", "knee_R_Joint"],
+        scale=0.2,
+        use_default_offset=True,
+    )
 
 
 @configclass
@@ -124,23 +128,23 @@ class ObservarionsCfg:
         # base_lin_vel = ObsTerm(func=mdp.base_lib_vel, noise=GaussianNoise(mean=0.0, std=0.05))
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=GaussianNoise(mean=0.0, std=0.05))
         proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
-        
+
         # robot joint measurements
         joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
         joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
 
         # last action
         last_action = ObsTerm(func=mdp.last_action)
-        
-        #velocity command
+
+        # velocity command
         vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
-        
+
         # height measurement
-        # heights = ObsTerm(func=mdp.height_scan, 
+        # heights = ObsTerm(func=mdp.height_scan,
         #                   params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         #                             noise=GaussianNoise(mean=0.0, std=0.01),
         #                     )
-        
+
         def __post_init__(self):
             self.enable_corruption = True
             self.concatenate_terms = True
@@ -210,7 +214,11 @@ class RewardsCfg:
         func=mdp.track_ang_vel_z_exp, weight=5, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
     rew_no_fly = RewTerm(
-        func=mdp.no_fly, weight=5.0, params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), }
+        func=mdp.no_fly,
+        weight=5.0,
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
+        },
     )
 
     # penalizations
@@ -239,16 +247,23 @@ class RewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
-    # pen_base_height = RewTerm(func=mdp.base_height_l2, 
+    # pen_base_height = RewTerm(func=mdp.base_height_l2,
     #                           params={"target_height": 0.8},
     #                           weight=-10.0)
-    # pen_feet_contact_forces = RewTerm(func=mdp.contact_forces, 
+    # pen_feet_contact_forces = RewTerm(func=mdp.contact_forces,
     #                                   params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 350.0},
     #                                   weight=-0.01)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
     # pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
-    pen_no_contact = RewTerm(func=mdp.no_contact, weight=-5.0, 
-                             params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),})
+    pen_no_contact = RewTerm(
+        func=mdp.no_contact,
+        weight=-5.0,
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
+        },
+    )
+
+
 @configclass
 class TerminationsCfg:
     """Termination terms for the MDP"""
