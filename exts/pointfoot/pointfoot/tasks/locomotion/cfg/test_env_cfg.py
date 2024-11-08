@@ -108,7 +108,8 @@ class CommandsCfg:
 class ActionsCfg:
     """Action specifications for the MDP"""
 
-    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True, preserve_order=True)
+    joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True)
+    
 
 
 @configclass
@@ -125,7 +126,7 @@ class ObservarionsCfg:
         proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
         
         # robot joint measurements
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel_debug, noise=GaussianNoise(mean=0.0, std=0.01))
+        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
         joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
 
         # last action

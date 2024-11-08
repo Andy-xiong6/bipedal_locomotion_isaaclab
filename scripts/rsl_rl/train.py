@@ -55,6 +55,7 @@ torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = False
 
 
+
 def main():
     """Train with RSL-RL agent."""
     # parse configuration
@@ -120,7 +121,8 @@ def main():
 
     # run training
     runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
-
+    
+    
     # close the simulator
     env.close()
 

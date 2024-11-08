@@ -4,10 +4,10 @@ abad_L abad_R hip_L hip_R knee_L knee_R
 0        3      1      4     2      5
 
 train:
-observation:  abad_L abad_R hip_L hip_R knee_L knee_R
-action: abad_L abad_R hip_L hip_R knee_L knee_R
+observation:  abad_L abad_R hip_L hip_R knee_L knee_R  ?
+action:       abad_L abad_R hip_L hip_R knee_L knee_R        ?
 
 
 deploy:
-observation:  abad_L abad_R hip_L hip_R knee_L knee_R
-action: abad_L abad_R hip_L hip_R knee_L knee_R
+observation:  abad_L abad_R hip_L hip_R knee_L knee_R  
+action:       abad_L abad_R hip_L hip_R knee_L knee_R
