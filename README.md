@@ -64,7 +64,7 @@ bash ./start.sh
 - To play a trained model:
 
 ```bash
-python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-v0 --checkpoint_path=path/to/checkpoint --num_envs=32
+python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-v0 --checkpoint_path=path/to/checkpoint
 ```
 
 - The following arguments can be used to customize the playing:
@@ -73,7 +73,7 @@ python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-v0 --checkpoint_pa
     * --checkpoint_path: Path to the checkpoint to load
 
 ## Running exported model in mujoco (sim2sim)
-- After playing the model, the policy has already been saved. You can export the policy to mujoco environment and run it in mujoco by using the `rl-deploy-with-python` repo [@limxdynamics/rl-deploy-with-python](https://github.com/limxdynamics/rl-deploy-with-python).
+- After playing the model, the policy has already been saved. You can export the policy to mujoco environment and run it in mujoco [@Andy-xiong6/pointfoot-mujoco-sim](https://github.com/Andy-xiong6/pointfoot-mujoco-sim)by using the `rl-deploy-with-python` repo [@Andy-xiong6/rl-deploy-with-python](https://github.com/Andy-xiong6/rl-deploy-with-python).
 
 - Follwing the instructions to install it properly and replace the `model/pointfoot/{Robot Type}/policy/policy.onnx` by your trained policy.onnx.
 
