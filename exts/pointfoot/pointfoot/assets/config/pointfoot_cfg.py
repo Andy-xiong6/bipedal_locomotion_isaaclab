@@ -4,7 +4,8 @@ import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.actuators import ImplicitActuatorCfg
 from omni.isaac.lab.assets.articulation import ArticulationCfg
 
-usd_path = "/home/xhw/pointfoot-IsaacLabExtension/exts/pointfoot/pointfoot/assets/usd/PF_P441C2/PF_P441C2.usd"
+current_dir = os.path.dirname(__file__)
+usd_path = os.path.join(current_dir, "../usd/PF_P441C2/PF_P441C2.usd")
 
 POINTFOOT_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
