@@ -83,14 +83,20 @@ python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-v0 --checkpoint_pa
 
 ### Simulation in Isaac Lab
 - **Blind Flat**:
+
 https://github.com/user-attachments/assets/58acb940-adc3-42c2-a249-a0fd8c1fd52c  
+
 - **Blind Rough**:
-https://github.com/user-attachments/assets/7448ebe3-0107-49d7-81c7-71df0951bd37  
+
+https://github.com/user-attachments/assets/7448ebe3-0107-49d7-81c7-71df0951bd37
+
 - **Blind Stairs**:
+
 https://github.com/user-attachments/assets/74074571-f327-42d0-a424-7df8d9e96653
 
 ### Simulation in Mujoco
 - **Blind Flat**:
+
 https://github.com/user-attachments/assets/85a7fff1-53cc-446a-a97f-4e1d909134c2
 
 ## Troubleshooting
