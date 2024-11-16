@@ -16,7 +16,7 @@ This repository is used to simulate pointfoot robots, such as limxdynamics TRON1
 
 ## Installation
 
-- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/source/setup/installation/index.html). We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
+- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html). We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
 
 - Clone the repository separately from the Isaac Lab installation (i.e. outside the `IsaacLab` directory):
 
