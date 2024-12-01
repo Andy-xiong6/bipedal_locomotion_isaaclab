@@ -247,9 +247,9 @@ class RewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
-    # pen_base_height = RewTerm(func=mdp.base_height_l2,
-    #                           params={"target_height": 0.8},
-    #                           weight=-10.0)
+    pen_base_height = RewTerm(func=mdp.base_height_l2,
+                              params={"target_height": 0.8},
+                              weight=-10.0)
     # pen_feet_contact_forces = RewTerm(func=mdp.contact_forces,
     #                                   params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 350.0},
     #                                   weight=-0.01)
