@@ -220,21 +220,21 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
         },
     )
+    rew_feet_air_time_positive_biped = RewTerm(
+        func=mdp.feet_air_time_positive_biped,
+        weight=5.0,
+        params={
+            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
+            "command_name": "base_velocity",
+            "threshold": 0.5,
+        }
+    )
 
     # penalizations
     pen_joint_deviation = RewTerm(
         func=mdp.joint_deviation_l1,
         weight=-0.05,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=[".*"])},
-    )
-    pen_feet_air_time = RewTerm(
-        func=mdp.feet_air_time,
-        weight=5.0,
-        params={
-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
-            "command_name": "base_velocity",
-            "threshold": 0.5,
-        },
     )
     pen_undesired_contacts = RewTerm(
         func=mdp.undesired_contacts,
@@ -244,16 +244,15 @@ class RewardsCfg:
     pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
     pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
     pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
+    pen_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-5e-4)
-    pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)
     pen_base_height = RewTerm(func=mdp.base_height_l2,
                               params={"target_height": 0.8},
                               weight=-10.0)
     # pen_feet_contact_forces = RewTerm(func=mdp.contact_forces,
     #                                   params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"), "threshold": 350.0},
     #                                   weight=-0.01)
-    pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
     # pen_applied_torque_limits = RewTerm(func=mdp.applied_torque_limits, weight=-0.1)
     pen_no_contact = RewTerm(
         func=mdp.no_contact,
@@ -262,6 +261,7 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
         },
     )
+    pen_stan_still = RewTerm(func=mdp.stand_still, weight=-7.5)
 
 
 @configclass

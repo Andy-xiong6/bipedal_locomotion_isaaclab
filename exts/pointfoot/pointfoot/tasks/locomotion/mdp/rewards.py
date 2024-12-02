@@ -89,22 +89,29 @@ def no_contact(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tens
 
     return (torch.sum(contacts.float(), dim=1) == 0).float()
 
-def stand_still(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"), threshold: float = 0.01) -> torch.Tensor:
+def stand_still(env, lin_threshold: float = 0.1, ang_threshold: float = 0.1, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     """
-    Penalize if the robot is not standing still.
+    penalizing linear and angular motion when command velocities are near zero.
     """
     
     asset = env.scene[asset_cfg.name]
-    
-    current_dof_pos = asset.data.joint_pos
-    default_dof_pos = asset.data.default_joint_pos
-    
-    dof_deviation = torch.sum(torch.abs(current_dof_pos - default_dof_pos), dim=1)
-    
-    commands = env.command_manager.get_command("linear_velocity")[:, :2]
-    is_command_zero = torch.sum(torch.abs(commands), dim=1) < threshold
-    
-    return dof_deviation * is_command_zero.float()
+    base_lin_vel = asset.data.root_lin_vel_w[:, :2]  
+    base_ang_vel = asset.data.root_ang_vel_w[:, -1]  
+
+    commands = env.command_manager.get_command("base_velocity")
+
+    lin_commands = commands[:, :2] 
+    ang_commands = commands[:, 2]  
+
+    reward_lin = torch.sum(
+        torch.abs(base_lin_vel) * (torch.norm(lin_commands, dim=1, keepdim=True) < lin_threshold),
+        dim=-1
+    )
+ 
+    reward_ang = torch.abs(base_ang_vel) * (torch.abs(ang_commands) < ang_threshold)
+
+    total_reward = reward_lin + reward_ang
+    return total_reward
 
     
     
