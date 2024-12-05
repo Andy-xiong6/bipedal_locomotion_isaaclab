@@ -3,34 +3,54 @@ from __future__ import annotations
 import torch
 from typing import TYPE_CHECKING
 
+import omni.isaac.lab.utils.math as math_utils
+from omni.isaac.lab.assets import Articulation, RigidObject
 from omni.isaac.lab.managers import SceneEntityCfg
-from omni.isaac.lab.sensors import ContactSensor
-from omni.isaac.lab.utils.string import resolve_matching_names
+from omni.isaac.lab.managers.manager_base import ManagerTermBase
+from omni.isaac.lab.managers.manager_term_cfg import ObservationTermCfg
+from omni.isaac.lab.sensors import Camera, Imu, RayCaster, RayCasterCamera, TiledCamera
 
 if TYPE_CHECKING:
-    from omni.isaac.lab.envs import ManagerBasedRLEnv
+    from omni.isaac.lab.envs import ManagerBasedEnv, ManagerBasedRLEnv
 
-
-def feet_contact_bools(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, threshold: float) -> torch.Tensor:
-    """Feet contact booleans. The foot is in contact when the force sensor exceeds the threshold"""
-
-    # extract the used quantities (to enable type-hinting)
-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
-    net_contact_forces = contact_sensor.data.net_forces_w
-    # check which contact forces exceed the threshold
-    return torch.norm(net_contact_forces[:, sensor_cfg.body_ids], dim=-1) > threshold
-
-
-def joint_pos_rel_debug(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
-    """Get joint positions relative to the default positions based on joint names."""
+def robot_mass(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """mass of the robot"""
     asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.default_mass.to(device)
+
+def robot_inertia(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """inertia of the robot"""
     asset: Articulation = env.scene[asset_cfg.name]
-    return asset.data.joint_pos[:, asset_cfg.joint_ids] - asset.data.default_joint_pos[:, asset_cfg.joint_ids]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.default_inertia.to(device)
 
-    joint_names_all = asset.data.joint_names
-    print("joint_pos: ", asset.data.joint_pos[:, asset_cfg.joint_ids])
-    print("default_joint_pos: ", asset.data.default_joint_pos[:, asset_cfg.joint_ids])
-    print(asset_cfg.joint_ids)
-    print(joint_names_all)
+def robot_joint_pos(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """joint positions of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.default_joint_pos.to(device)
 
-    return joint_pos - default_joint_pos
+def robot_joint_stiffness(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """joint stiffness of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.default_joint_stiffness.to(device)
+
+def robot_joint_damping(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """joint damping of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.default_joint_damping.to(device)
+
+def robot_pos(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """pose of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.root_pos_w.to(device)
+
+def robot_vel(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """velocity of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    return asset.data.root_vel_w.to(device)

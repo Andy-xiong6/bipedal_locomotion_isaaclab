@@ -63,7 +63,7 @@ class PFBlindFlatEnvCfg(PFBaseEnvCfg):
     def __post_init__(self):
         super().__post_init__()
 
-        self.rewards.pen_flat_orientation = None
+        # self.rewards.pen_flat_orientation = None
 
         self.curriculum.terrain_levels = None
 
