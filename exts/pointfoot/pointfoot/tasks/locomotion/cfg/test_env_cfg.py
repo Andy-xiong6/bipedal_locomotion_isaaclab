@@ -167,7 +167,7 @@ class ObservarionsCfg:
 
         # Privileged observation
         robot_mass = ObsTerm(func=mdp.robot_mass, noise=GaussianNoise(mean=0.0, std=0.01))
-        # robot_inertia = ObsTerm(func=mdp.robot_inertia, noise=GaussianNoise(mean=0.0, std=0.01))
+        robot_inertia = ObsTerm(func=mdp.robot_inertia, noise=GaussianNoise(mean=0.0, std=0.01))
         robot_joint_pos = ObsTerm(func=mdp.robot_joint_pos, noise=GaussianNoise(mean=0.0, std=0.01))
         robot_joint_stiffness = ObsTerm(func=mdp.robot_joint_stiffness, noise=GaussianNoise(mean=0.0, std=0.01))
         robot_joint_damping = ObsTerm(func=mdp.robot_joint_damping, noise=GaussianNoise(mean=0.0, std=0.01))

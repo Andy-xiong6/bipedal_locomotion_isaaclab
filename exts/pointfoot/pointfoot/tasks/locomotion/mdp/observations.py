@@ -23,7 +23,8 @@ def robot_inertia(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityC
     """inertia of the robot"""
     asset: Articulation = env.scene[asset_cfg.name]
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    return asset.data.default_inertia.to(device)
+    inertia_tensor = asset.data.default_inertia.to(device)
+    return inertia_tensor.view(inertia_tensor.shape[0],-1)
 
 def robot_joint_pos(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
     """joint positions of the robot"""
