@@ -55,3 +55,17 @@ def robot_vel(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("
     asset: Articulation = env.scene[asset_cfg.name]
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     return asset.data.root_vel_w.to(device)
+
+def robot_material_properties(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """material properties of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    material_tensor = asset.root_physx_view.get_material_properties().to(device)
+    return material_tensor.view(material_tensor.shape[0],-1)
+
+def robot_center_of_mass(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """center of mass of the robot"""
+    asset: Articulation = env.scene[asset_cfg.name]
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    com_tensor = asset.root_physx_view.get_coms().clone().to(device)
+    return com_tensor.view(com_tensor.shape[0],-1)

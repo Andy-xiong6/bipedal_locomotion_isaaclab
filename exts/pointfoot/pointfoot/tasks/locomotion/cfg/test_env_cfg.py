@@ -173,6 +173,8 @@ class ObservarionsCfg:
         robot_joint_damping = ObsTerm(func=mdp.robot_joint_damping, noise=GaussianNoise(mean=0.0, std=0.01))
         robot_pos = ObsTerm(func=mdp.robot_pos, noise=GaussianNoise(mean=0.0, std=0.01))
         robot_vel = ObsTerm(func=mdp.robot_vel, noise=GaussianNoise(mean=0.0, std=0.01))
+        robot_material_propertirs = ObsTerm(func=mdp.robot_material_properties, noise=GaussianNoise(mean=0.0, std=0.01))
+        
 
         def __post_init__(self):
             self.enable_corruption = True
@@ -192,7 +194,7 @@ class EventsCfg:
         mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names="base_Link"),
-            "mass_distribution_params": (-1.0, 2.0),
+            "mass_distribution_params": (-5.0, 5.0),
             "operation": "add",
         },
     )
@@ -205,22 +207,20 @@ class EventsCfg:
             "operation": "scale",
         },
     )
-
-    # reset
     robot_physics_material = EventTerm(
         func=mdp.randomize_rigid_body_material,
-        mode="reset",
+        mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
-            "static_friction_range": (0.7, 1.3),
-            "dynamic_friction_range": (1.0, 1.0),
-            "restitution_range": (1.0, 1.0),
-            "num_buckets": 250,
+            "static_friction_range": (0.4, 1.2),
+            "dynamic_friction_range": (0.7, 0.9),
+            "restitution_range": (0.0, 1.0),
+            "num_buckets": 48,
         },
     )
     robot_joint_stiffness_and_damping = EventTerm(
         func=mdp.randomize_actuator_gains,
-        mode="reset",
+        mode="startup",
         params={
             "asset_cfg": SceneEntityCfg("robot", joint_names=".*"),
             "stiffness_distribution_params": (32, 48),
@@ -229,11 +229,23 @@ class EventsCfg:
             "distribution": "uniform",
         },
     )
+    robot_center_of_mass = EventTerm(
+        func=mdp.randomize_rigid_body_coms,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot"),
+            "com_distribution_params": ((-0.075, 0.075), (-0.05, 0.06), (-0.05, 0.05)),
+            "operation": "add",
+            "distribution": "uniform",
+        },
+    )
+    
+    # reset
     reset_robot_base = EventTerm(
         func=mdp.reset_root_state_uniform,
         mode="reset",
         params={
-            "pose_range": {"x": (-1.5, 1.5), "y": (-1.5, 1.5), "yaw": (-3.14, 3.14)},
+            "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)},
             "velocity_range": {
                 "x": (-0.5, 0.5),
                 "y": (-0.5, 0.5),
@@ -249,7 +261,7 @@ class EventsCfg:
         func=mdp.reset_joints_by_scale,
         mode="reset",
         params={
-            "position_range": (0.5, 1.5),
+            "position_range": (0.0, 0.0),
             "velocity_range": (0.0, 0.0),
         },
     )
@@ -336,7 +348,7 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*foot_[LR]_Link"),
         },
     )
-    pen_stan_still = RewTerm(func=mdp.stand_still, weight=-7.5)
+    pen_stan_still = RewTerm(func=mdp.stand_still, weight=-40.0)
 
 
 @configclass
