@@ -198,6 +198,15 @@ class EventsCfg:
             "operation": "add",
         },
     )
+    add_link_mass = EventTerm(
+        func=mdp.randomize_rigid_body_mass,
+        mode="startup",
+        params={
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*_[LR]_Link"),
+            "mass_distribution_params": (0.8, 1.2),
+            "operation": "scale",
+        },
+    )
     radomize_rigid_body_mass_inertia = EventTerm(
         func=mdp.randomize_rigid_body_mass_inertia,
         mode="startup",
