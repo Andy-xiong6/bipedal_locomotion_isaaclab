@@ -3,6 +3,7 @@ import math
 from omni.isaac.lab.utils import configclass
 
 from pointfoot.assets.config.pointfoot_cfg import POINTFOOT_CFG
+from pointfoot.tasks.locomotion.cfg.rough_env_cfg import RoughEnvCfg
 from pointfoot.tasks.locomotion.cfg.test_env_cfg import PFEnvCfg
 from pointfoot.tasks.locomotion.cfg.test_terrains_cfg import (
     BLIND_ROUGH_TERRAINS_CFG,
@@ -151,3 +152,89 @@ class PFBlindStairsEnvCfg_PLAY(PFBaseEnvCfg_PLAY):
         self.scene.terrain.terrain_type = "generator"
         self.scene.terrain.max_init_terrain_level = None
         self.scene.terrain.terrain_generator = STAIRS_TERRAINS_PLAY_CFG.replace(difficulty_range=(0.5, 0.5))
+        
+
+##############################
+# Test environment
+##############################
+
+@configclass
+class TestBaseEnvCfg(RoughEnvCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.scene.robot = POINTFOOT_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot.init_state.joint_pos = {
+            "abad_L_Joint": 0.0,
+            "abad_R_Joint": 0.0,
+            "hip_L_Joint": 0.0918,
+            "hip_R_Joint": 0.0918,
+            "knee_L_Joint": -0.057,
+            "knee_R_Joint": -0.057,
+        }
+
+        self.terminations.base_contact.params["sensor_cfg"].body_names = "base_Link"
+
+
+@configclass
+class TestBaseEnvCfg_PLAY(TestBaseEnvCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        # make a smaller scene for play
+        self.scene.num_envs = 32
+
+        # disable randomization for play
+        self.observations.policy.enable_corruption = False
+        # remove random pushing event
+        self.events.push_robot = None
+        # remove random base mass addition event
+        self.events.add_base_mass = None
+        
+
+#############################
+# Test Blind Rough Environment
+#############################
+
+@configclass
+class TestBlindRoughEnvCfg(TestBaseEnvCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.rewards.pen_flat_orientation = None
+
+        self.scene.terrain.terrain_type = "generator"
+        self.scene.terrain.terrain_generator = BLIND_ROUGH_TERRAINS_CFG
+
+        # update viewport camera
+        self.viewer.origin_type = "env"
+
+
+@configclass
+class TestBlindRoughEnvCfg_PLAY(TestBaseEnvCfg_PLAY):
+    def __post_init__(self):
+        super().__post_init__()
+
+        # spawn the robot randomly in the grid (instead of their terrain levels)
+        self.scene.terrain.terrain_type = "generator"
+        self.scene.terrain.max_init_terrain_level = None
+        self.scene.terrain.terrain_generator = BLIND_ROUGH_TERRAINS_PLAY_CFG
+        
+#############################
+# Test Blind Flat Environment
+#############################
+
+@configclass
+class TestBlindFlatEnvCfg(TestBaseEnvCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.curriculum.terrain_levels = None
+
+
+@configclass
+class TestBlindFlatEnvCfg_PLAY(TestBaseEnvCfg_PLAY):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.curriculum.terrain_levels = None

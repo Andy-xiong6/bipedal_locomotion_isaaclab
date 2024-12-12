@@ -1,1 +1,2 @@
-python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-v0 --max_iteration=2001 --num_envs=4096 --headless
+python scripts/rsl_rl/train.py --task=Isaac-PF-Blind-Flat-test --max_iteration=10001 --num_envs=8192 --headless
+# python scripts/rsl_rl/play.py --task=Isaac-PF-Blind-Flat-Play-test --checkpoint_path=logs/rsl_rl/pf_blind_rough/2024-12-11_23-17-39/model_2000.pt
