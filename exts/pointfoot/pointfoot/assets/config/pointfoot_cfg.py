@@ -5,7 +5,7 @@ from omni.isaac.lab.actuators import ImplicitActuatorCfg
 from omni.isaac.lab.assets.articulation import ArticulationCfg
 
 current_dir = os.path.dirname(__file__)
-usd_path = os.path.join(current_dir, "../usd/PF_P441C2/PF_P441C2.usd")
+usd_path = os.path.join(current_dir, "../usd/PF_P441C/PF_P441C.usd")
 
 POINTFOOT_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
@@ -61,12 +61,12 @@ POINTFOOT_CFG = ArticulationCfg(
                 "knee_R_Joint": 40.0,
             },
             damping={
-                "abad_L_Joint": 1.5,
-                "abad_R_Joint": 1.5,
-                "hip_L_Joint": 1.5,
-                "hip_R_Joint": 1.5,
-                "knee_L_Joint": 1.5,
-                "knee_R_Joint": 1.5,
+                "abad_L_Joint": 2.5,
+                "abad_R_Joint": 2.5,
+                "hip_L_Joint": 2.5,
+                "hip_R_Joint": 2.5,
+                "knee_L_Joint": 2.5,
+                "knee_R_Joint": 2.5,
             },
         ),
     },
