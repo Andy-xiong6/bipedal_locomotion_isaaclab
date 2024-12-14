@@ -173,6 +173,13 @@ def base_height_adjusted(
     # Compute the L2 squared penalty
     return torch.square(asset.data.root_pos_w[:, 2] - adjusted_target_height)
 
+def action_smoothness(env: ManagerBasedRLEnv) -> torch.Tensor:
+    '''Penalize the action smoothness'''
+    return torch.sum(
+        torch.square(env.action_manager.action - 2 * env.action_manager.prev_action - env.action_manager.prev_prev_action),
+        dim=1  # Sum over the action dimension
+    )
+
 class GaitReward(ManagerTermBase):
     def __init__(self, cfg: RewardTermCfg, env: ManagerBasedRLEnv):
         """Initialize the term.

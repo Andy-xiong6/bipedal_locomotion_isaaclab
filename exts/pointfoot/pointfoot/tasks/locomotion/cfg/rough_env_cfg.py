@@ -66,13 +66,14 @@ class PFSceneCfg(InteractiveSceneCfg):
     robot: ArticulationCfg = MISSING
 
     # height sensors
-    height_scanner = RayCasterCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/base_Link",
-        attach_yaw_only=True,
-        pattern_cfg=patterns.GridPatternCfg(resolution=0.05, size=[1.0, 1.0]),
-        debug_vis=True,
-        mesh_prim_paths=["/World/ground"],
-    )
+    # height_scanner = RayCasterCfg(
+    #     prim_path="{ENV_REGEX_NS}/Robot/base_Link",
+    #     attach_yaw_only=True,
+    #     pattern_cfg=patterns.GridPatternCfg(resolution=0.05, size=[1.0, 1.0]),
+    #     debug_vis=True,
+    #     mesh_prim_paths=["/World/ground"],
+    # )
+    height_scanner = None
 
     # contact sensors
     contact_forces = ContactSensorCfg(
@@ -336,22 +337,21 @@ class TestRewardsCfg:
     # penalizations
     pen_undesired_contacts = RewTerm(
         func=mdp.undesired_contacts,
-        weight=-50.0,
+        weight=-0.5,
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*knee_[LR]_Link"), "threshold": 1.0},
     )
     pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
     pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
     pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
-    pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-1.0)
+    # pen_action_smoothness = RewTerm(func=mdp.action_smoothness, weight=-0.01)
+    pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-2e-5)
-    # pen_base_height = RewTerm(func=mdp.base_height_l2,
-    #                           params={"target_height": 0.65,},
-    #                           weight=-1.0)
-    pen_base_height = RewTerm(func=mdp.base_height_adjusted, 
-                              params={"target_height": 0.65,
-                                      "sensor_cfg": SceneEntityCfg("height_scanner")},
+    pen_base_height = RewTerm(func=mdp.base_height_l2,
+                              params={"target_height": 0.65,},
                               weight=-1.0)
+    pen_joint_torque = RewTerm(func=mdp.joint_torques_l2, weight=-1e-4)
+    pen_joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-1.0)
     
     # Gait reward
     test_gait_reward = RewTerm(
