@@ -104,6 +104,16 @@ def robot_center_of_mass(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = Scene
     return com_tensor.view(com_tensor.shape[0], -1)
 
 
+def robot_contact_force(env: ManagerBasedEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
+    """The contact forces of the body."""
+    # extract the used quantities (to enable type-hinting)
+    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+
+    body_contact_force = contact_sensor.data.net_forces_w[:, sensor_cfg.body_ids]
+
+    return body_contact_force.reshape(body_contact_force.shape[0], -1)
+
+
 def get_gait_phase(env: ManagerBasedRLEnv) -> torch.Tensor:
     """Get the current gait phase as observation.
 
