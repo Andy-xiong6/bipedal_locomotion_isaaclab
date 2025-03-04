@@ -11,7 +11,7 @@ from omni.isaac.lab.managers import RewardTermCfg as RewTerm
 from omni.isaac.lab.managers import SceneEntityCfg
 from omni.isaac.lab.managers import TerminationTermCfg as DoneTerm
 from omni.isaac.lab.scene import InteractiveSceneCfg
-from omni.isaac.lab.sensors import ContactSensorCfg, RayCasterCfg, patterns
+from omni.isaac.lab.sensors import ContactSensorCfg
 from omni.isaac.lab.sim import DomeLightCfg, MdlFileCfg, RigidBodyMaterialCfg
 from omni.isaac.lab.terrains import TerrainImporterCfg
 from omni.isaac.lab.utils import configclass
@@ -89,7 +89,7 @@ class PFSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
-class TestCommandCfg(BaseCommandsCfg):
+class CommandCfg(BaseCommandsCfg):
     gait_command = mdp.UniformGaitCommandCfg(
         resampling_time_range=(5.0, 5.0),  # Fixed resampling time of 5 seconds
         debug_vis=False,  # No debug visualization needed
@@ -126,7 +126,7 @@ class ActionsCfg:
 
 
 @configclass
-class TestObservarionsCfg:
+class ObservarionsCfg:
     """Observation specifications for the MDP"""
 
     @configclass
@@ -170,11 +170,11 @@ class TestObservarionsCfg:
 
         # Policy observation
 
-        base_ang_vel = ObsTerm(func=mdp.base_ang_vel, noise=GaussianNoise(mean=0.0, std=0.05))
-        proj_gravity = ObsTerm(func=mdp.projected_gravity, noise=GaussianNoise(mean=0.0, std=0.025))
+        base_ang_vel = ObsTerm(func=mdp.base_ang_vel)
+        proj_gravity = ObsTerm(func=mdp.projected_gravity)
 
-        joint_pos = ObsTerm(func=mdp.joint_pos_rel, noise=GaussianNoise(mean=0.0, std=0.01))
-        joint_vel = ObsTerm(func=mdp.joint_vel, noise=GaussianNoise(mean=0.0, std=0.01))
+        joint_pos = ObsTerm(func=mdp.joint_pos_rel)
+        joint_vel = ObsTerm(func=mdp.joint_vel)
 
         last_action = ObsTerm(func=mdp.last_action)
 
@@ -204,7 +204,7 @@ class TestObservarionsCfg:
         robot_base_pose = ObsTerm(func=mdp.robot_base_pose)
 
         def __post_init__(self):
-            self.enable_corruption = True
+            self.enable_corruption = False
             self.concatenate_terms = True
             self.history_length = 5
             self.flatten_history_dim = True
@@ -317,12 +317,6 @@ class EventsCfg:
     )
 
     # interval
-    # push_robot = EventTerm(
-    #     func=mdp.push_by_setting_velocity,
-    #     mode="interval",
-    #     interval_range_s=(10.0, 15.0),
-    #     params={"velocity_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-math.pi / 6, math.pi / 6)}},
-    # )
     push_robot = EventTerm(
         func=mdp.apply_external_force_torque_stochastic,
         mode="interval",
@@ -343,7 +337,7 @@ class EventsCfg:
 
 
 @configclass
-class TestRewardsCfg:
+class RewardsCfg:
     """Reward terms for the MDP"""
 
     # rewards
@@ -380,11 +374,11 @@ class TestRewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-07)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-2.0e-05)
     pen_base_height = RewTerm(
-        func=mdp.base_height_l2,
+        func=mdp.base_com_height,
         params={
-            "target_height": 0.6,
+            "target_height": 0.62,
         },
-        weight=-2.0,
+        weight=-1.0,
     )
     pen_joint_torque = RewTerm(func=mdp.joint_torques_l2, weight=-2.0e-05)
     pen_joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-1.0)
@@ -430,17 +424,17 @@ class CurriculumCfg:
 
 
 @configclass
-class RoughEnvCfg(ManagerBasedRLEnvCfg):
+class FlatEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the test environment"""
 
     # Scene settings
     scene: PFSceneCfg = PFSceneCfg(num_envs=4096, env_spacing=2.5)
     # Basic settings
-    observations: TestObservarionsCfg = TestObservarionsCfg()
+    observations: ObservarionsCfg = ObservarionsCfg()
     actions: ActionsCfg = ActionsCfg()
-    commands: TestCommandCfg = TestCommandCfg()
+    commands: CommandCfg = CommandCfg()
     # MDP settings
-    rewards: TestRewardsCfg = TestRewardsCfg()
+    rewards: RewardsCfg = RewardsCfg()
     terminations: TerminationsCfg = TerminationsCfg()
     events: EventsCfg = EventsCfg()
     curriculum: CurriculumCfg = CurriculumCfg()

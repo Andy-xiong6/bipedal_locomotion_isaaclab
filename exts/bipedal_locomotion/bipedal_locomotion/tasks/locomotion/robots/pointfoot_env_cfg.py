@@ -3,9 +3,9 @@ import math
 from omni.isaac.lab.utils import configclass
 
 from bipedal_locomotion.assets.config.pointfoot_cfg import POINTFOOT_CFG
-from bipedal_locomotion.tasks.locomotion.cfg.rough_env_cfg import RoughEnvCfg
-from bipedal_locomotion.tasks.locomotion.cfg.test_env_cfg import PFEnvCfg
-from bipedal_locomotion.tasks.locomotion.cfg.test_terrains_cfg import (
+from bipedal_locomotion.tasks.locomotion.cfg.PF.rough_env_cfg import RoughEnvCfg
+from bipedal_locomotion.tasks.locomotion.cfg.PF.test_env_cfg import PFEnvCfg
+from bipedal_locomotion.tasks.locomotion.cfg.PF.test_terrains_cfg import (
     BLIND_ROUGH_TERRAINS_CFG,
     BLIND_ROUGH_TERRAINS_PLAY_CFG,
     STAIRS_TERRAINS_CFG,
