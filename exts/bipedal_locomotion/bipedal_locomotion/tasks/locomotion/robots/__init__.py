@@ -27,8 +27,8 @@ wf_blind_flat_runner_cfg.experiment_name = "wf_blind_flat"
 wf_blind_rough_runner_cfg = WheelFootPPORunnerCfg()
 wf_blind_rough_runner_cfg.experiment_name = "wf_blind_rough"
 
-wf_blind_stairs_runner_cfg = WheelFootPPORunnerCfg()
-wf_blind_stairs_runner_cfg.experiment_name = "wf_blind_stairs"
+wf_stairs_runner_cfg = WheelFootPPORunnerCfg()
+wf_stairs_runner_cfg.experiment_name = "wf_blind_stairs"
 
 ##
 # Register Gym environments
@@ -208,21 +208,21 @@ gym.register(
 #############################
 
 gym.register(
-    id="Isaac-WF-Blind-Stairs",
+    id="Isaac-WF-Stairs",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": wheelfoot_env_cfg.WFBlindStairsEnvCfg,
-        "rsl_rl_cfg_entry_point": wf_blind_stairs_runner_cfg,
+        "env_cfg_entry_point": wheelfoot_env_cfg.WFStairsEnvCfg,
+        "rsl_rl_cfg_entry_point": wf_stairs_runner_cfg,
     },
 )
 
 gym.register(
-    id="Isaac-WF-Blind-Stairs-Play",
+    id="Isaac-WF-Stairs-Play",
     entry_point="omni.isaac.lab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": wheelfoot_env_cfg.WFBlindStairsEnvCfg_PLAY,
-        "rsl_rl_cfg_entry_point": wf_blind_stairs_runner_cfg,
+        "env_cfg_entry_point": wheelfoot_env_cfg.WFStairsEnvCfg_PLAY,
+        "rsl_rl_cfg_entry_point": wf_stairs_runner_cfg,
     },
 )

@@ -68,14 +68,14 @@ class WFSceneCfg(InteractiveSceneCfg):
     robot: ArticulationCfg = MISSING
 
     # height sensors
-    # height_scanner = RayCasterCfg(
-    #     prim_path="{ENV_REGEX_NS}/Robot/base_Link",
-    #     attach_yaw_only=True,
-    #     pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=[1.6, 1.0]),
-    #     debug_vis=False,
-    #     mesh_prim_paths=["/World/ground"],
-    # )
-    height_scanner = None
+    height_scanner = RayCasterCfg(
+        prim_path="{ENV_REGEX_NS}/Robot/base_Link",
+        attach_yaw_only=True,
+        pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=[1.6, 1.0]),
+        debug_vis=False,
+        mesh_prim_paths=["/World/ground"],
+    )
+    # height_scanner = None
 
     # contact sensors
     contact_forces = ContactSensorCfg(
@@ -96,11 +96,10 @@ class CommandCfg(BaseCommandsCfg):
         self.base_velocity.heading_command = True
         self.base_velocity.debug_vis = True
         self.base_velocity.heading_control_stiffness = 1.5
-        self.base_velocity.resampling_time_range = (0.0, 10.0)
         self.base_velocity.rel_standing_envs = 0.02
         self.base_velocity.rel_heading_envs = 1.0
         self.base_velocity.ranges = mdp.UniformVelocityCommandCfg.Ranges(
-            lin_vel_x=(-1.0, 1.0), lin_vel_y=(-0.5, 0.5), ang_vel_z=(-1, 1), heading=(-math.pi, math.pi)
+            lin_vel_x=(-1.0, 1.0), lin_vel_y=(-0.5, 0.5), ang_vel_z=(-math.pi, math.pi), heading=(-math.pi, math.pi)
         )
 
 
@@ -145,10 +144,10 @@ class ObservarionsCfg:
         vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
 
         # height measurement
-        # heights = ObsTerm(func=mdp.height_scan,
-        #                   params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-        #                             noise=GaussianNoise(mean=0.0, std=0.01),
-        #                     )
+        heights = ObsTerm(func=mdp.height_scan,
+                          params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+                                    noise=GaussianNoise(mean=0.0, std=0.01),
+                            )
 
         def __post_init__(self):
             self.enable_corruption = True
@@ -183,9 +182,17 @@ class ObservarionsCfg:
         robot_joint_damping = ObsTerm(func=mdp.robot_joint_damping)
         robot_pos = ObsTerm(func=mdp.robot_pos)
         robot_vel = ObsTerm(func=mdp.robot_vel)
-        robot_material_propertirs = ObsTerm(func=mdp.robot_material_properties)
+        robot_material_properties = ObsTerm(func=mdp.robot_material_properties)
         robot_base_pose = ObsTerm(func=mdp.robot_base_pose)
-
+        feet_contact_force = ObsTerm(
+            func=mdp.robot_contact_force, params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="wheel_.*")}
+        )
+        
+        heights = ObsTerm(func=mdp.height_scan,
+                          params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+                                    noise=GaussianNoise(mean=0.0, std=0.01),
+                            )
+        
         def __post_init__(self):
             self.enable_corruption = False
             self.concatenate_terms = True
@@ -336,11 +343,16 @@ class RewardsCfg:
     rew_ang_vel_z = RewTerm(
         func=mdp.track_ang_vel_z_exp, weight=0.75, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
+    no_fly = RewTerm(
+            func=mdp.no_fly,
+            weight=0.5,
+            params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="wheel_.*"), "threshold": 5.0},
+    )
 
     # penalizations
     pen_undesired_contacts = RewTerm(
         func=mdp.undesired_contacts,
-        weight=-0.5,
+        weight=-0.25,
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=["abad_.*", "hip_.*", "knee_.*", "base_Link"]),
             "threshold": 10.0,
@@ -351,15 +363,29 @@ class RewardsCfg:
     pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
     pen_action_smoothness = RewTerm(func=mdp.ActionSmoothnessPenalty, weight=-0.01)
     pen_flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-1.0)
-    pen_joint_vel_l2 = RewTerm(func=mdp.joint_vel_l2, weight=-5.0e-05)
-    pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-07)
+    pen_non_wheel_pos_limits = RewTerm(
+        func=mdp.joint_pos_limits,
+        weight=-1.0,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names="(?!wheel_).*")},
+    )
+    pen_joint_vel_wheel_l2 = RewTerm(
+        func=mdp.joint_vel_l2, weight=-5e-4, params={"asset_cfg": SceneEntityCfg("robot", joint_names="wheel_.+")}
+    )
+    
+    pen_vel_non_wheel_l2 = RewTerm(
+        func=mdp.joint_vel_l2,
+        weight=-5e-5,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names="(?!wheel_).*")},
+    )
+    pen_joint_acc = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-07)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-2.0e-05)
     pen_base_height = RewTerm(
-        func=mdp.base_height_l2,
+        func=mdp.base_height_rough_l2,
         params={
-            "target_height": 0.6,
+            "target_height": 0.9,
+            "sensor_cfg": SceneEntityCfg("height_scanner")
         },
-        weight=-2.0,
+        weight=-1.0,
     )
     pen_joint_torque = RewTerm(func=mdp.joint_torques_l2, weight=-2.0e-05)
     pen_joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-1.0)
@@ -390,7 +416,7 @@ class CurriculumCfg:
 
 
 @configclass
-class RoughEnvCfg(ManagerBasedRLEnvCfg):
+class WFRoughEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the test environment"""
 
     # Scene settings

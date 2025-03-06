@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Optional
 from omni.isaac.lab.assets import Articulation, RigidObject
 from omni.isaac.lab.managers import ManagerTermBase, SceneEntityCfg
 from omni.isaac.lab.sensors import ContactSensor, RayCaster
+import omni.isaac.lab.utils.math as math_utils
 
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
