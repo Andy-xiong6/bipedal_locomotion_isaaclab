@@ -95,11 +95,11 @@ class CommandsCfg:
         heading_command=True,
         heading_control_stiffness=0.5,
         rel_standing_envs=0.02,
-        rel_heading_envs=0.0,
+        rel_heading_envs=1.0,
         debug_vis=True,
-        resampling_time_range=(10.0, 10.0),
+        resampling_time_range=(3.0, 15.0),
         ranges=mdp.UniformVelocityCommandCfg.Ranges(
-            lin_vel_x=(-1.0, 1.0), lin_vel_y=(-0.2, 0.2), ang_vel_z=(-1, 1), heading=(-math.pi, math.pi)
+            lin_vel_x=(-1.0, 1.0), lin_vel_y=(-0.5, 0.5), ang_vel_z=(-math.pi, math.pi), heading=(-math.pi, math.pi)
         ),
     )
 
@@ -172,6 +172,8 @@ class ObservarionsCfg:
         vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
 
         # Privileged observation
+        robot_joint_torque = ObsTerm(func=mdp.robot_joint_torque)
+        robot_joint_acc = ObsTerm(func=mdp.robot_joint_acc)
         robot_mass = ObsTerm(func=mdp.robot_mass)
         robot_inertia = ObsTerm(func=mdp.robot_inertia)
         robot_joint_pos = ObsTerm(func=mdp.robot_joint_pos)
@@ -179,7 +181,7 @@ class ObservarionsCfg:
         robot_joint_damping = ObsTerm(func=mdp.robot_joint_damping)
         robot_pos = ObsTerm(func=mdp.robot_pos)
         robot_vel = ObsTerm(func=mdp.robot_vel)
-        robot_material_propertirs = ObsTerm(func=mdp.robot_material_properties)
+        robot_material_properties = ObsTerm(func=mdp.robot_material_properties)
         feet_contact_force = ObsTerm(
             func=mdp.robot_contact_force, params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="wheel_.*")}
         )
@@ -318,25 +320,46 @@ class RewardsCfg:
     rew_ang_vel_z = RewTerm(
         func=mdp.track_ang_vel_z_exp, weight=0.75, params={"command_name": "base_velocity", "std": math.sqrt(0.25)}
     )
+    no_fly = RewTerm(
+            func=mdp.no_fly,
+            weight=0.5,
+            params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names="wheel_.*"), "threshold": 5.0},
+    )
 
     # penalizations
     undesired_contacts = RewTerm(
         func=mdp.undesired_contacts,
-        weight=-0.5,
+        weight=-0.25,
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=["abad_.*", "hip_.*", "knee_.*", "base_Link"]), "threshold": 10.0},
     )
     pen_lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)
     pen_ang_vel_xy = RewTerm(func=mdp.ang_vel_xy_l2, weight=-0.05)
     pen_action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.01)
+    pen_action_smoothness = RewTerm(func=mdp.ActionSmoothnessPenalty, weight=-0.0004)
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-7)
-    pen_base_height = RewTerm(func=mdp.base_height_l2, params={"target_height": 0.9}, weight=-10.0)
+    pen_base_height = RewTerm(func=mdp.base_height_l2, params={"target_height": 0.9}, weight=-5.0)
     pen_joint_torque = RewTerm(func=mdp.joint_torques_l2, weight=-2.0e-5)
     pen_flat_orientation_l2 = RewTerm(func=mdp.flat_orientation_l2, weight=-5.0)
     pen_joint_vel_l2 = RewTerm(func=mdp.joint_vel_l2,weight = -5e-5)
     pen_joint_power_l1 = RewTerm(func=mdp.joint_powers_l1, weight=-2e-5)
-    pen_joint_pos_limit = RewTerm(func=mdp.joint_pos_limits, weight=-1.0)
-    pen_action_smoothness = RewTerm(func=mdp.ActionSmoothnessPenalty, weight=-0.01)
     
+    pen_non_wheel_pos_limits = RewTerm(
+        func=mdp.joint_pos_limits,
+        weight=-1.0,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names="(?!wheel_).*")},
+    )
+    
+    pen_joint_vel_wheel_l2 = RewTerm(
+        func=mdp.joint_vel_l2, weight=-5e-4, params={"asset_cfg": SceneEntityCfg("robot", joint_names="wheel_.+")}
+    )
+    
+    pen_vel_non_wheel_l2 = RewTerm(
+        func=mdp.joint_vel_l2,
+        weight=-5e-5,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names="(?!wheel_).*")},
+    )
+    
+
 
 
 @configclass
