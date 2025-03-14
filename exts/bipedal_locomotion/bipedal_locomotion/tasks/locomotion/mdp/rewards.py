@@ -158,6 +158,26 @@ def feet_regulation(
     return r_fr
 
 
+def base_height_rough_l2(
+    env: ManagerBasedRLEnv,
+    target_height: float,
+    sensor_cfg: SceneEntityCfg,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalize asset height from its target using L2 squared kernel.
+
+    Note:
+        Currently, it assumes a flat terrain, i.e. the target height is in the world frame.
+    """
+    # extract the used quantities (to enable type-hinting)
+    asset: RigidObject = env.scene[asset_cfg.name]
+    sensor: RayCaster = env.scene.sensors[sensor_cfg.name]
+    height = asset.data.root_pos_w[:, 2].unsqueeze(1) - sensor.data.ray_hits_w[:, :, 2]
+    # sensor.data.ray_hits_w can be inf, so we clip it to avoid NaN
+    height = torch.nan_to_num(height, nan=target_height, posinf=target_height, neginf=target_height)
+    return torch.square(height.mean(dim=1) - target_height)
+
+
 def base_com_height(
     env: ManagerBasedRLEnv,
     target_height: float,
