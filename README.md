@@ -5,7 +5,7 @@
 # bipedal_locomotion_isaaclab
 
 [![IsaacSim](https://img.shields.io/badge/IsaacSim-4.2.0-silver.svg)](https://docs.omniverse.nvidia.com/isaacsim/latest/overview.html)
-[![Isaac Lab](https://img.shields.io/badge/IsaacLab-1.2.0-silver)](https://isaac-sim.github.io/IsaacLab)
+[![Isaac Lab](https://img.shields.io/badge/IsaacLab-1.4.0-silver)](https://isaac-sim.github.io/IsaacLab)
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/20.04/)
 [![Windows platform](https://img.shields.io/badge/platform-windows--64-orange.svg)](https://www.microsoft.com/en-us/)
@@ -21,7 +21,7 @@ With the help of [Isaac Lab](https://github.com/isaac-sim/IsaacLab), we can trai
 
 ## Installation
 
-- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html). We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
+- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/v1.4.0/source/setup/installation/pip_installation.html). We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
 
 - Clone the repository separately from the Isaac Lab installation (i.e. outside the `IsaacLab` directory):
 
@@ -44,6 +44,14 @@ cd bipedal_locomotion_isaaclab
 ```bash
 python -m pip install -e exts/bipedal_locomotion
 ```
+
+- To use the mlp branch, install the library
+
+```bash
+cd bipedal_locomotion_isaaclab/rsl_rl
+python -m pip install -e .
+```
+
 ## Set up IDE (Optional)
 
 To setup the IDE, please follow these instructions:
