@@ -51,5 +51,33 @@ class PFRoughPPORunnerMlpCfg(PFFlatPPORunnerMlpCfg):
     def __post_init__(self):
         super().__post_init__()
 
-        self.experiment_name = "pf_rough"
+        self.experiment_name = "pf_mlp_rough"
+        self.runner_type = "OnPolicyRunnerMlp"
+        
+class PFStairPPORunnerMlpCfg(PFFlatPPORunnerMlpCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.experiment_name = "pf_mlp_stair"
+        self.runner_type = "OnPolicyRunnerMlp"
+        
+class WFFlatPPORunnerMlpCfg(PFFlatPPORunnerMlpCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.experiment_name = "wf_mlp_flat"
+        self.runner_type = "OnPolicyRunnerMlp"
+
+class WFRoughPPORunnerMlpCfg(PFFlatPPORunnerMlpCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.experiment_name = "wf_mlp_rough"
+        self.runner_type = "OnPolicyRunnerMlp"
+        
+class WFStairPPORunnerMlpCfg(PFFlatPPORunnerMlpCfg):
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.experiment_name = "wf_mlp_stair"
         self.runner_type = "OnPolicyRunnerMlp"

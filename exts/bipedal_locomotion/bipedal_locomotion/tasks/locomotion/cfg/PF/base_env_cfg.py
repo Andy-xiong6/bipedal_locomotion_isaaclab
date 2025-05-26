@@ -67,15 +67,7 @@ class PFSceneCfg(InteractiveSceneCfg):
     # pointfoot robot
     robot: ArticulationCfg = MISSING
 
-    # height sensors
-    # height_scanner = RayCasterCfg(
-    #     prim_path="{ENV_REGEX_NS}/Robot/base_Link",
-    #     attach_yaw_only=True,
-    #     pattern_cfg=patterns.GridPatternCfg(resolution=0.05, size=[1.0, 1.0]),
-    #     debug_vis=True,
-    #     mesh_prim_paths=["/World/ground"],
-    # )
-    height_scanner = None
+    height_scanner: RayCasterCfg = MISSING
 
     # contact sensors
     contact_forces = ContactSensorCfg(
@@ -89,7 +81,7 @@ class PFSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
-class TestCommandCfg(BaseCommandsCfg):
+class CommandCfg(BaseCommandsCfg):
     gait_command = mdp.UniformGaitCommandCfg(
         resampling_time_range=(5.0, 5.0),  # Fixed resampling time of 5 seconds
         debug_vis=False,  # No debug visualization needed
@@ -126,7 +118,7 @@ class ActionsCfg:
 
 
 @configclass
-class TestObservarionsCfg:
+class ObservarionsCfg:
     """Observation specifications for the MDP"""
 
     @configclass
@@ -148,16 +140,13 @@ class TestObservarionsCfg:
         # velocity command
         vel_command = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
 
-        # height measurement
-        # heights = ObsTerm(func=mdp.height_scan,
-        #                   params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-        #                             noise=GaussianNoise(mean=0.0, std=0.01),
-        #                     )
-
         # gaits
         gait_phase = ObsTerm(func=mdp.get_gait_phase)
         gait_command = ObsTerm(func=mdp.get_gait_command, params={"command_name": "gait_command"})
 
+        # heights scan
+        heights: ObsTerm = MISSING
+        
         def __post_init__(self):
             self.enable_corruption = True
             self.concatenate_terms = True
@@ -183,6 +172,8 @@ class TestObservarionsCfg:
         gait_phase = ObsTerm(func=mdp.get_gait_phase)
         gait_command = ObsTerm(func=mdp.get_gait_command, params={"command_name": "gait_command"})
 
+        heights: ObsTerm = MISSING
+        
         # Privileged observation
         base_lin_vel = ObsTerm(func=mdp.base_lin_vel)
         robot_joint_torque = ObsTerm(func=mdp.robot_joint_torque)
@@ -317,12 +308,6 @@ class EventsCfg:
     )
 
     # interval
-    # push_robot = EventTerm(
-    #     func=mdp.push_by_setting_velocity,
-    #     mode="interval",
-    #     interval_range_s=(10.0, 15.0),
-    #     params={"velocity_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-math.pi / 6, math.pi / 6)}},
-    # )
     push_robot = EventTerm(
         func=mdp.apply_external_force_torque_stochastic,
         mode="interval",
@@ -343,7 +328,7 @@ class EventsCfg:
 
 
 @configclass
-class TestRewardsCfg:
+class RewardsCfg:
     """Reward terms for the MDP"""
 
     # rewards
@@ -380,11 +365,11 @@ class TestRewardsCfg:
     pen_joint_accel = RewTerm(func=mdp.joint_acc_l2, weight=-2.5e-07)
     pen_joint_powers = RewTerm(func=mdp.joint_powers_l1, weight=-2.0e-05)
     pen_base_height = RewTerm(
-        func=mdp.base_height_l2,
+        func=mdp.base_com_height,
         params={
-            "target_height": 0.6,
+            "target_height": 0.65,
         },
-        weight=-2.0,
+        weight=-1.0,
     )
     pen_joint_torque = RewTerm(func=mdp.joint_torques_l2, weight=-2.0e-05)
     pen_joint_pos_limits = RewTerm(func=mdp.joint_pos_limits, weight=-1.0)
@@ -430,17 +415,17 @@ class CurriculumCfg:
 
 
 @configclass
-class RoughEnvCfg(ManagerBasedRLEnvCfg):
+class PFEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the test environment"""
 
     # Scene settings
     scene: PFSceneCfg = PFSceneCfg(num_envs=4096, env_spacing=2.5)
     # Basic settings
-    observations: TestObservarionsCfg = TestObservarionsCfg()
+    observations: ObservarionsCfg = ObservarionsCfg()
     actions: ActionsCfg = ActionsCfg()
-    commands: TestCommandCfg = TestCommandCfg()
+    commands: CommandCfg = CommandCfg()
     # MDP settings
-    rewards: TestRewardsCfg = TestRewardsCfg()
+    rewards: RewardsCfg = RewardsCfg()
     terminations: TerminationsCfg = TerminationsCfg()
     events: EventsCfg = EventsCfg()
     curriculum: CurriculumCfg = CurriculumCfg()
