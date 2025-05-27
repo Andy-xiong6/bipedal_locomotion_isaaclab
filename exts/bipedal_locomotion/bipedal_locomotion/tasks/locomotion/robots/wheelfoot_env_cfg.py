@@ -189,7 +189,6 @@ class WFFlatEnvCfg(WFBaseEnvCfg):
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-                    noise=GaussianNoise(mean=0.0, std=0.01),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
@@ -208,6 +207,9 @@ class WFFlatEnvCfg_PLAY(WFBaseEnvCfg_PLAY):
             mesh_prim_paths=["/World/ground"],
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
+            params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+        )
+        self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
@@ -237,7 +239,6 @@ class WFRoughEnvCfg(WFBaseEnvCfg):
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-                    noise=GaussianNoise(mean=0.0, std=0.01),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
@@ -261,6 +262,9 @@ class WFRoughEnvCfg_PLAY(WFBaseEnvCfg_PLAY):
             mesh_prim_paths=["/World/ground"],
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
+            params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+        )
+        self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
@@ -297,7 +301,6 @@ class WFStairEnvCfg(WFBaseEnvCfg):
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-                    noise=GaussianNoise(mean=0.0, std=0.01),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
@@ -318,10 +321,13 @@ class WFStairEnvCfg_PLAY(WFBaseEnvCfg_PLAY):
             prim_path="{ENV_REGEX_NS}/Robot/base_Link",
             attach_yaw_only=True,
             pattern_cfg=patterns.GridPatternCfg(resolution=0.05, size=[0.5, 0.5]), #TODO: adjust size to fit real robot
-            debug_vis=False,
+            debug_vis=True,
             mesh_prim_paths=["/World/ground"],
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
+            params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+        )
+        self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt

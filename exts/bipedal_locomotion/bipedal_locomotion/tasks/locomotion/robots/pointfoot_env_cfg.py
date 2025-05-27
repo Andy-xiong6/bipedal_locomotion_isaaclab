@@ -148,7 +148,6 @@ class PFBlindRoughEnvCfg(PFBaseEnvCfg):
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-                    noise=GaussianNoise(mean=0.0, std=0.01),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
@@ -169,6 +168,9 @@ class PFBlindRoughEnvCfg_PLAY(PFBaseEnvCfg_PLAY):
             mesh_prim_paths=["/World/ground"],
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
+            params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+        )
+        self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
@@ -252,7 +254,6 @@ class PFStairEnvCfgv1(PFBaseEnvCfg):
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
-                    noise=GaussianNoise(mean=0.0, std=0.01),
         )
         
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
@@ -274,6 +275,9 @@ class PFStairEnvCfgv1_PLAY(PFBaseEnvCfg_PLAY):
             mesh_prim_paths=["/World/ground"],
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
+            params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+        )
+        self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
         )
         
