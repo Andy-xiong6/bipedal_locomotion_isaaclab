@@ -298,9 +298,11 @@ class WFStairEnvCfg(WFBaseEnvCfg):
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
                     noise=GaussianNoise(mean=0.0, std=0.01),
+                    clip = (0.0, 10.0),
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+            clip = (0.0, 10.0),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
@@ -326,9 +328,11 @@ class WFStairEnvCfg_PLAY(WFBaseEnvCfg_PLAY):
         )
         self.observations.policy.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+            clip = (0.0, 10.0),
         )
         self.observations.critic.heights = ObsTerm(func=mdp.height_scan,
             params = {"sensor_cfg": SceneEntityCfg("height_scanner")},
+            clip = (0.0, 10.0),
         )
         self.scene.height_scanner.update_period = self.decimation * self.sim.dt
 
